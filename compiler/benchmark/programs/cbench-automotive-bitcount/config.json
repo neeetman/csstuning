@@ -1,0 +1,4 @@
+{
+    "repeat_times": 100,
+    "command": "./a.out 1125000"
+}

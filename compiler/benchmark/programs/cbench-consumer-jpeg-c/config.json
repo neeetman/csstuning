@@ -1,0 +1,4 @@
+{
+    "repeat_times": 1800,
+    "command": "./a.out -dct int -progressive -opt -outfile tmp-output.tmp ../../dataset/image-ppm-0001/data.ppm"
+}

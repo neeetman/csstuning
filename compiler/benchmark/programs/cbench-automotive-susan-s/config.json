@@ -1,0 +1,4 @@
+{
+    "repeat_times": 800,
+    "command": "./a.out ../../dataset/image-pgm-from-pamela-100/data.pgm tmp-output.tmp -s"
+}

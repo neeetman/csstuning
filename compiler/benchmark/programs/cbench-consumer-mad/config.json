@@ -1,0 +1,8 @@
+{
+	"build_compiler_vars": {
+	    "FPM_DEFAULT": "",
+    	"HAVE_CONFIG_H": ""
+	},
+    "repeat_times": 1800,
+    "command": "./a.out --time=10000 --output=wave:tmp-output.tmp ../../dataset/audio-mp3-0001/data.mp3"
+}

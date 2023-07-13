@@ -1,0 +1,4 @@
+{
+    "repeat_times": 4776125,
+    "command": "./a.out ../../dataset/cdataset-dijkstra-0001/data.txt"
+}

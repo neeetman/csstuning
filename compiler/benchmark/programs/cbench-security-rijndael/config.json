@@ -1,0 +1,4 @@
+{
+    "repeat_times": 1800,
+    "command": "./a.out ../../dataset/enc-0001/data.enc tmp-output.tmp d 1234567890abcdeffedcba09876543211234567890abcdeffedcba0987654321"
+}

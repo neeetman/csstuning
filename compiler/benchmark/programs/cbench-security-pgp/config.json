@@ -1,0 +1,7 @@
+{
+    "build_compiler_vars": {
+	    "PORTABLE": ""
+	},
+    "repeat_times": 1800,
+    "command": "./a.out ../../dataset/pgp-0001/data.pgp -o tmp-output.tmp"
+}

@@ -1,0 +1,4 @@
+{
+    "repeat_times": 100000,
+    "command": "./a.out ../../dataset/cdataset-patricia-0001/data.txt"
+}

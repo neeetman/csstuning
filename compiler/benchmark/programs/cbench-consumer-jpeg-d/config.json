@@ -1,0 +1,4 @@
+{
+    "repeat_times": 1800,
+    "command": "./a.out -dct int -ppm -outfile tmp-output.tmp ../../dataset/image-jpeg-0001/data.jpg"
+}

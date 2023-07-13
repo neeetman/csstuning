@@ -1,0 +1,9 @@
+{
+	"build_compiler_vars": {
+    	"NeedFunctionPrototypes": 1,
+    	"SASR": "",
+    	"STUPID_COMPILER": ""
+  	},
+    "repeat_times": 1800,
+    "command": "./a.out -fps -c ../../dataset/au-0001/data.au"
+}

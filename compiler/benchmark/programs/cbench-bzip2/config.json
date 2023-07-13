@@ -1,0 +1,4 @@
+{
+    "repeat_times": 100,
+    "command": "./a.out -d -k -f ../../dataset/bzip2-0001/data.bz2"
+}
