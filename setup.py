@@ -10,6 +10,7 @@ setup(
     # },
     entry_points={
         "console_scripts": [
+            "csstuning=csstuning.kernel:cli",
             "csstuning_setup_docker=csstuning.docker_support:setup_docker_compiler",
         ]
     }

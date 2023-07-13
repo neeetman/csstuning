@@ -1,10 +1,15 @@
 #!/bin/bash
 set -e
 image_name="compiler-benchmark:0.1"
+echo "Building docker image $image_name"
 
 if docker image inspect "$image_name" >/dev/null 2>&1; then
     echo "$image_name exists, remove it first"
-    docker container rm $(docker container ls -a -q --filter "ancestor=$image_name")
+    container_id=$(docker ps -aq --filter "ancestor=$image_name")
+    if $container_id; then
+        echo "Remove running container $container_id"
+        docker container rm "$container_id"
+    fi
     docker rmi "$image_name"
 fi
 
