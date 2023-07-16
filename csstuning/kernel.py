@@ -1,14 +1,11 @@
 import json
-import os
 import sys
-import subprocess
-import time
-from compiler.benchmarks import GCCBenchmark
+import importlib_resources as resources
 from pathlib import Path
+from csstuning.compiler.benchmark import GCCBenchmark, LLVMBenchmark
 
-
-# CSSTUNING_PATH = os.environ.get("CSSTUNING_PATH")
-CSSTUNING_PATH = Path(__file__).resolve().parent.parent
+# pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
+# pkg_path = Path(pkg_resources.resource_filename('csstuning', ''))
 
 compiler_benchs = []
 
@@ -17,25 +14,35 @@ compiler_flags = {
     "llvm": []
 }
 
+
 def load_compiler_contants():
     global compiler_benchs
     global compiler_flags
 
-    constants_path = CSSTUNING_PATH/"compiler/constants"
-    with open(constants_path/"gcc_flags.txt", "r") as read_file:
-        compiler_flags["gcc"] = [line.strip() for line in read_file if line.strip()]
+    # constants_path = pkg_path / "compiler/constants"
+    constants_path = "cssbenchmarks.compiler.constants"
+    with resources.open_text(constants_path, 'gcc_flags.json') as json_file:
+        gcc_flag_dict = json.load(json_file)
+        compiler_flags["gcc"] = gcc_flag_dict["O1"] + gcc_flag_dict["O2"] + gcc_flag_dict["O3"] + gcc_flag_dict["Ofast"]
 
-    with open(constants_path/'llvm_flags.txt', 'r') as read_file:
-        compiler_flags["llvm"] = [line.strip() for line in read_file if line.strip()]
+    with resources.open_text(constants_path, 'llvm_passes.json') as json_file:
+        llvm_pass_dict = json.load(json_file)
+        compiler_flags["llvm"] = llvm_pass_dict["analysis_passes"] + llvm_pass_dict["transform_passes"]
 
-    with open(constants_path/'programs.txt', 'r') as read_file:
-        compiler_benchs = [line.strip() for line in read_file if line.strip()]
-
+    with resources.open_text(constants_path, 'programs.json') as json_file:
+        compiler_benchs = json.load(json_file)
 
 def run_gcc_benchmark(benchs, flags):
     gcc_bench = GCCBenchmark()
     for b in benchs:
         gcc_bench.run(b, flags)
+        
+    return {"return": 0}
+
+def run_llvm_benchmark(benchs, flags):
+    llvm_bench = LLVMBenchmark()
+    for b in benchs:
+        llvm_bench.run(b, flags)
         
     return {"return": 0}
 
@@ -60,7 +67,20 @@ def handle_compiler_run(type, args):
             return {"return": 1, "msg": f"Invalid benchmark {b}!"}
 
     flags = flags.strip('"')
-    return run_gcc_benchmark(benchs, flags)
+    # Split the flags by comma and put them in a dictionary
+    flags_dict = {}
+    for flag in flags.split(','):
+        if '=' in flag:
+            flag_pair = flag.split('=', 1)
+            flags_dict[flag_pair[0]] = flag_pair[1]
+        elif len(flag) > 0:
+            flags_dict[flag] = True
+
+    print(f"Running {type} benchmarks {benchs} with flags {flags_dict}...")
+    if type == "gcc":
+        return run_gcc_benchmark(benchs, flags_dict)
+    elif type == "llvm":
+        return run_llvm_benchmark(benchs, flags_dict)
 
 def handle_compiler_list(type, args):
     if len(args) == 0:
@@ -134,8 +154,7 @@ def print_usage(type):
         print("")
         print(" Example of compiler tunning usage:") 
         print("   $ csstuning compiler:gcc list benchs")
-        print("   $ csstuning compiler:gcc run benchs=cbench-automotive-bitcount \\") 
-        print("         flags=\"-ftree-loop-vectorize -ftree-partial-pre\"")      
+        print("   $ csstuning compiler:gcc run benchs=cbench-automotive-bitcount flags=\"ftree-loop-vectorize,ftree-partial-pre\"")
     elif type == "dbsm":
         pass
     else:
@@ -150,14 +169,6 @@ def print_usage(type):
 
 
 def cli():
-    # if CSSTUNING_PATH exists, then it should be a directory
-    if CSSTUNING_PATH is None or not CSSTUNING_PATH.exists():
-        print("CSSTUNING_PATH is not set!")
-        exit(1)
-    if not os.path.exists(CSSTUNING_PATH):
-        print(f"Can't find benchmark path {CSSTUNING_PATH}!")
-        exit(1)
-
     # Get the arguments passed to the script
     r = handle(sys.argv[1:])
 

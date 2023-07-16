@@ -1,3 +1,1 @@
-recursive-include compiler/constants *
-recursive-include compiler/benchmark *
-recursive-include compiler/docker *
+recursive-include cssbenchmarks *
