@@ -1,0 +1,12 @@
+{
+	"build_compiler_vars": {
+		"CXM": 16,
+		"CYM": 16,
+		"CZ": 16,
+		"DATA_TYPE": "double",
+		"POLYBENCH_DUMP_ARRAYS": "YES",
+		"POLYBENCH_PADDING_FACTOR": 0
+  	},
+    "repeat_times": 21159,
+    "command": "./a.out "
+}

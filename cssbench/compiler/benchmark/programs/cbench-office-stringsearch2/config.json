@@ -1,0 +1,4 @@
+{
+    "repeat_times": 10000,
+    "command": "./a.out ../../dataset/txt-0001/data.txt ../../dataset/txt-0001/data.s.txt tmp-output.tmp"
+}

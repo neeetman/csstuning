@@ -1,0 +1,12 @@
+{
+	"build_compiler_vars": {
+		"DATA_TYPE": "double",
+		"LENGTH": 16,
+		"MAXGRID": 2,
+		"NITER": 10,
+		"POLYBENCH_DUMP_ARRAYS": "YES",
+		"POLYBENCH_PADDING_FACTOR": 0
+  	},
+    "repeat_times": 1618877,
+    "command": "./a.out "
+}

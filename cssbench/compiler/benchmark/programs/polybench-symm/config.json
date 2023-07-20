@@ -1,0 +1,11 @@
+{
+	"build_compiler_vars": {
+		"DATA_TYPE": "double",
+		"NI": 16,
+		"NJ": 16,
+		"POLYBENCH_DUMP_ARRAYS": "YES",
+		"POLYBENCH_PADDING_FACTOR": 0
+  	},
+    "repeat_times": 726548,
+    "command": "./a.out "
+}

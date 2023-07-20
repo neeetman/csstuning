@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 # Add benchmarks to data_files
 data_files = []
-for floder, subfloders, files in os.walk("cssbenchmarks"):
+for floder, subfloders, files in os.walk("cssbench"):
     if len(files) > 0:
         data_files.append((floder, [os.path.join(floder, f) for f in files]))
 

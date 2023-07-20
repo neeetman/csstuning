@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/cssbench/compiler/benchmark/utilities",
+                "${workspaceFolder}/cssbench/compiler/benchmark/utilities/polybench/include",
+                "${workspaceFolder}/cssbench/compiler/benchmark/utilities/papi/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
