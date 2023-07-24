@@ -1,6 +1,0 @@
-Added PAPI event PAPI_TOT_CYC
-Added PAPI event PAPI_TOT_INS
-Added PAPI event PAPI_BR_MSP
-Added PAPI event PAPI_BR_PRC
-Added PAPI event PAPI_BR_CN
-Added PAPI event PAPI_MEM_WCY
