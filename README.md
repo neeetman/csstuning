@@ -9,7 +9,8 @@ Optimizing software configurations is a crucial aspect of performance tuning for
 ## Overview
 The following block diagram shows the rough internal structure of CSStuing:
 
-![system_structure](https://github.com/neeetman/csstuning/assets/71478917/ee799329-09b5-4fb1-b43a-1075235a7f70)
+![system_structure](https://github.com/neeetman/csstuning/assets/71478917/eef95bd0-e9d3-4a3d-9ca8-ba743e7defc1)
+
 
 ## Benchmark List
 
