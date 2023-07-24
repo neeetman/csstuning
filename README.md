@@ -44,9 +44,9 @@ python setup.py install --user
 
 ### 1.Compiler Benchmarks
 
-# Use via command line #
+/*Use via command line*/
 
-# GCC compiler #
+**GCC compiler**
 
 ```
 # View the available benchmarks for GCC #
@@ -59,7 +59,7 @@ csstuning --help
 csstuning compiler:gcc run benchs=cbench-automotive-bitcount flags="ftree-loop-vectorize,ftree-partial-pre"
 ```
 
-# LLVM compiler #
+**LLVM compiler**
 
 ```
 # View the available benchmarks for LLVM #
