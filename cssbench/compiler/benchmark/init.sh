@@ -1,20 +1,20 @@
 #!/bin/bash
 
-mkdir -p utilities/papi
-mkdir -p utilities/polybench
+mkdir -p ${PAPI_DIR}
+mkdir -p ${POLYBENCH_DIR}
 
-tar -xzf packages/papi701.tar.gz -C utilities/papi
-tar -xzf packages/polybench.tar.gz -C utilities/polybench
+tar -xzf packages/papi701.tar.gz -C ${PAPI_DIR}
+tar -xzf packages/polybench.tar.gz -C ${POLYBENCH_DIR}
 
-pushd utilities/papi/src/src
-./configure --prefix=$PWD/../..
+pushd ${PAPI_DIR}/src/src
+./configure --prefix=${PAPI_DIR}
 make && make install
 popd
 
-pushd utilities/polybench/src
+pushd ${POLYBENCH_DIR}/src
 make
 popd
 
-rm -rf utilities/papi/src
-rm -rf utilities/polybench/src
+rm -rf ${PAPI_DIR}/src
+rm -rf ${POLYBENCH_DIR}/src
 

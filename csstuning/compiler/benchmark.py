@@ -34,6 +34,7 @@ class CompilerBenchmarkBase(ABC):
             self.container = self.client.containers.run(
                 image=self.docker_image,
                 command=f"/bin/bash -c 'while true; do sleep 86400; done'",
+                privileged=True,
                 detach=True,
                 remove=True
             )

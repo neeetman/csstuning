@@ -28,9 +28,9 @@ RUN apt-get update \
   && ln -s /usr/bin/llvm-link-15 /usr/bin/llvm-link
 
 
+ENV PAPI_DIR=/benchmark/utilities/papi \
+    POLYBENCH_DIR=/benchmark/utilities/polybench
+ENV LD_LIBRARY_PATH=${PAPI_DIR}/lib:${POLYBENCH_DIR}/lib:${LD_LIBRARY_PATH}
+
 COPY benchmark /benchmark
 RUN /bin/bash /benchmark/init.sh
-
-ENV PAPI_DIR=/benchmark/utilities/papi \
-    POLYBENCH_DIR=/benchmark/utilities/polybench \
-    LD_LIBRARY_PATH=${PAPI_DIR}/lib:${POLYBENCH_DIR}/lib:${LD_LIBRARY_PATH}
