@@ -30,8 +30,7 @@ setup(
     package_data={'csstuning': ['cssbenchmarks/*']}, # include data files in csstuning package
     entry_points={
         "console_scripts": [
-            "csstuning=csstuning.kernel:cli",
-            "csstuning_setup_docker=csstuning.docker_support:setup_docker_compiler",
+            "csstuning=csstuning.kernel:cli"
         ]
     },
     install_requires=[

@@ -1,0 +1,847 @@
+; ModuleID = 'jidctint.bc'
+source_filename = "jidctint.c"
+target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+target triple = "x86_64-pc-linux-gnu"
+
+%struct.jpeg_decompress_struct = type { ptr, ptr, ptr, i32, i32, ptr, i32, i32, i32, i32, i32, i32, i32, double, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, ptr, i32, i32, i32, i32, i32, ptr, [4 x ptr], [4 x ptr], [4 x ptr], i32, ptr, i32, i32, [16 x i8], [16 x i8], [16 x i8], i32, i32, i8, i16, i16, i32, i8, i32, i32, i32, i32, i32, ptr, i32, [4 x ptr], i32, i32, i32, [10 x i32], i32, i32, i32, i32, i32, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr }
+%struct.jpeg_component_info = type { i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, ptr, ptr }
+
+; Function Attrs: noinline nounwind uwtable
+define dso_local void @jpeg_idct_islow(ptr noundef %0, ptr noundef %1, ptr noundef %2, ptr noundef %3, i32 noundef %4) #0 {
+  %6 = alloca ptr, align 8
+  %7 = alloca ptr, align 8
+  %8 = alloca ptr, align 8
+  %9 = alloca ptr, align 8
+  %10 = alloca i32, align 4
+  %11 = alloca i64, align 8
+  %12 = alloca i64, align 8
+  %13 = alloca i64, align 8
+  %14 = alloca i64, align 8
+  %15 = alloca i64, align 8
+  %16 = alloca i64, align 8
+  %17 = alloca i64, align 8
+  %18 = alloca i64, align 8
+  %19 = alloca i64, align 8
+  %20 = alloca i64, align 8
+  %21 = alloca i64, align 8
+  %22 = alloca i64, align 8
+  %23 = alloca i64, align 8
+  %24 = alloca ptr, align 8
+  %25 = alloca ptr, align 8
+  %26 = alloca ptr, align 8
+  %27 = alloca ptr, align 8
+  %28 = alloca ptr, align 8
+  %29 = alloca i32, align 4
+  %30 = alloca [64 x i32], align 16
+  %31 = alloca i32, align 4
+  %32 = alloca i8, align 1
+  store ptr %0, ptr %6, align 8
+  store ptr %1, ptr %7, align 8
+  store ptr %2, ptr %8, align 8
+  store ptr %3, ptr %9, align 8
+  store i32 %4, ptr %10, align 4
+  %33 = load ptr, ptr %6, align 8
+  %34 = getelementptr inbounds %struct.jpeg_decompress_struct, ptr %33, i32 0, i32 61
+  %35 = load ptr, ptr %34, align 8
+  %36 = getelementptr inbounds i8, ptr %35, i64 128
+  store ptr %36, ptr %28, align 8
+  %37 = load ptr, ptr %8, align 8
+  store ptr %37, ptr %24, align 8
+  %38 = load ptr, ptr %7, align 8
+  %39 = getelementptr inbounds %struct.jpeg_component_info, ptr %38, i32 0, i32 20
+  %40 = load ptr, ptr %39, align 8
+  store ptr %40, ptr %25, align 8
+  %41 = getelementptr inbounds [64 x i32], ptr %30, i64 0, i64 0
+  store ptr %41, ptr %26, align 8
+  store i32 8, ptr %29, align 4
+  br label %42
+
+42:                                               ; preds = %354, %5
+  %43 = load i32, ptr %29, align 4
+  %44 = icmp sgt i32 %43, 0
+  br i1 %44, label %45, label %357
+
+45:                                               ; preds = %42
+  %46 = load ptr, ptr %24, align 8
+  %47 = getelementptr inbounds i16, ptr %46, i64 8
+  %48 = load i16, ptr %47, align 2
+  %49 = sext i16 %48 to i32
+  %50 = load ptr, ptr %24, align 8
+  %51 = getelementptr inbounds i16, ptr %50, i64 16
+  %52 = load i16, ptr %51, align 2
+  %53 = sext i16 %52 to i32
+  %54 = or i32 %49, %53
+  %55 = load ptr, ptr %24, align 8
+  %56 = getelementptr inbounds i16, ptr %55, i64 24
+  %57 = load i16, ptr %56, align 2
+  %58 = sext i16 %57 to i32
+  %59 = or i32 %54, %58
+  %60 = load ptr, ptr %24, align 8
+  %61 = getelementptr inbounds i16, ptr %60, i64 32
+  %62 = load i16, ptr %61, align 2
+  %63 = sext i16 %62 to i32
+  %64 = or i32 %59, %63
+  %65 = load ptr, ptr %24, align 8
+  %66 = getelementptr inbounds i16, ptr %65, i64 40
+  %67 = load i16, ptr %66, align 2
+  %68 = sext i16 %67 to i32
+  %69 = or i32 %64, %68
+  %70 = load ptr, ptr %24, align 8
+  %71 = getelementptr inbounds i16, ptr %70, i64 48
+  %72 = load i16, ptr %71, align 2
+  %73 = sext i16 %72 to i32
+  %74 = or i32 %69, %73
+  %75 = load ptr, ptr %24, align 8
+  %76 = getelementptr inbounds i16, ptr %75, i64 56
+  %77 = load i16, ptr %76, align 2
+  %78 = sext i16 %77 to i32
+  %79 = or i32 %74, %78
+  %80 = icmp eq i32 %79, 0
+  br i1 %80, label %81, label %121
+
+81:                                               ; preds = %45
+  %82 = load ptr, ptr %24, align 8
+  %83 = getelementptr inbounds i16, ptr %82, i64 0
+  %84 = load i16, ptr %83, align 2
+  %85 = sext i16 %84 to i32
+  %86 = load ptr, ptr %25, align 8
+  %87 = getelementptr inbounds i32, ptr %86, i64 0
+  %88 = load i32, ptr %87, align 4
+  %89 = mul nsw i32 %85, %88
+  %90 = shl i32 %89, 2
+  store i32 %90, ptr %31, align 4
+  %91 = load i32, ptr %31, align 4
+  %92 = load ptr, ptr %26, align 8
+  %93 = getelementptr inbounds i32, ptr %92, i64 0
+  store i32 %91, ptr %93, align 4
+  %94 = load i32, ptr %31, align 4
+  %95 = load ptr, ptr %26, align 8
+  %96 = getelementptr inbounds i32, ptr %95, i64 8
+  store i32 %94, ptr %96, align 4
+  %97 = load i32, ptr %31, align 4
+  %98 = load ptr, ptr %26, align 8
+  %99 = getelementptr inbounds i32, ptr %98, i64 16
+  store i32 %97, ptr %99, align 4
+  %100 = load i32, ptr %31, align 4
+  %101 = load ptr, ptr %26, align 8
+  %102 = getelementptr inbounds i32, ptr %101, i64 24
+  store i32 %100, ptr %102, align 4
+  %103 = load i32, ptr %31, align 4
+  %104 = load ptr, ptr %26, align 8
+  %105 = getelementptr inbounds i32, ptr %104, i64 32
+  store i32 %103, ptr %105, align 4
+  %106 = load i32, ptr %31, align 4
+  %107 = load ptr, ptr %26, align 8
+  %108 = getelementptr inbounds i32, ptr %107, i64 40
+  store i32 %106, ptr %108, align 4
+  %109 = load i32, ptr %31, align 4
+  %110 = load ptr, ptr %26, align 8
+  %111 = getelementptr inbounds i32, ptr %110, i64 48
+  store i32 %109, ptr %111, align 4
+  %112 = load i32, ptr %31, align 4
+  %113 = load ptr, ptr %26, align 8
+  %114 = getelementptr inbounds i32, ptr %113, i64 56
+  store i32 %112, ptr %114, align 4
+  %115 = load ptr, ptr %24, align 8
+  %116 = getelementptr inbounds i16, ptr %115, i32 1
+  store ptr %116, ptr %24, align 8
+  %117 = load ptr, ptr %25, align 8
+  %118 = getelementptr inbounds i32, ptr %117, i32 1
+  store ptr %118, ptr %25, align 8
+  %119 = load ptr, ptr %26, align 8
+  %120 = getelementptr inbounds i32, ptr %119, i32 1
+  store ptr %120, ptr %26, align 8
+  br label %354
+
+121:                                              ; preds = %45
+  %122 = load ptr, ptr %24, align 8
+  %123 = getelementptr inbounds i16, ptr %122, i64 16
+  %124 = load i16, ptr %123, align 2
+  %125 = sext i16 %124 to i32
+  %126 = load ptr, ptr %25, align 8
+  %127 = getelementptr inbounds i32, ptr %126, i64 16
+  %128 = load i32, ptr %127, align 4
+  %129 = mul nsw i32 %125, %128
+  %130 = sext i32 %129 to i64
+  store i64 %130, ptr %20, align 8
+  %131 = load ptr, ptr %24, align 8
+  %132 = getelementptr inbounds i16, ptr %131, i64 48
+  %133 = load i16, ptr %132, align 2
+  %134 = sext i16 %133 to i32
+  %135 = load ptr, ptr %25, align 8
+  %136 = getelementptr inbounds i32, ptr %135, i64 48
+  %137 = load i32, ptr %136, align 4
+  %138 = mul nsw i32 %134, %137
+  %139 = sext i32 %138 to i64
+  store i64 %139, ptr %21, align 8
+  %140 = load i64, ptr %20, align 8
+  %141 = load i64, ptr %21, align 8
+  %142 = add nsw i64 %140, %141
+  %143 = mul nsw i64 %142, 4433
+  store i64 %143, ptr %19, align 8
+  %144 = load i64, ptr %19, align 8
+  %145 = load i64, ptr %21, align 8
+  %146 = mul nsw i64 %145, -15137
+  %147 = add nsw i64 %144, %146
+  store i64 %147, ptr %13, align 8
+  %148 = load i64, ptr %19, align 8
+  %149 = load i64, ptr %20, align 8
+  %150 = mul nsw i64 %149, 6270
+  %151 = add nsw i64 %148, %150
+  store i64 %151, ptr %14, align 8
+  %152 = load ptr, ptr %24, align 8
+  %153 = getelementptr inbounds i16, ptr %152, i64 0
+  %154 = load i16, ptr %153, align 2
+  %155 = sext i16 %154 to i32
+  %156 = load ptr, ptr %25, align 8
+  %157 = getelementptr inbounds i32, ptr %156, i64 0
+  %158 = load i32, ptr %157, align 4
+  %159 = mul nsw i32 %155, %158
+  %160 = sext i32 %159 to i64
+  store i64 %160, ptr %20, align 8
+  %161 = load ptr, ptr %24, align 8
+  %162 = getelementptr inbounds i16, ptr %161, i64 32
+  %163 = load i16, ptr %162, align 2
+  %164 = sext i16 %163 to i32
+  %165 = load ptr, ptr %25, align 8
+  %166 = getelementptr inbounds i32, ptr %165, i64 32
+  %167 = load i32, ptr %166, align 4
+  %168 = mul nsw i32 %164, %167
+  %169 = sext i32 %168 to i64
+  store i64 %169, ptr %21, align 8
+  %170 = load i64, ptr %20, align 8
+  %171 = load i64, ptr %21, align 8
+  %172 = add nsw i64 %170, %171
+  %173 = shl i64 %172, 13
+  store i64 %173, ptr %11, align 8
+  %174 = load i64, ptr %20, align 8
+  %175 = load i64, ptr %21, align 8
+  %176 = sub nsw i64 %174, %175
+  %177 = shl i64 %176, 13
+  store i64 %177, ptr %12, align 8
+  %178 = load i64, ptr %11, align 8
+  %179 = load i64, ptr %14, align 8
+  %180 = add nsw i64 %178, %179
+  store i64 %180, ptr %15, align 8
+  %181 = load i64, ptr %11, align 8
+  %182 = load i64, ptr %14, align 8
+  %183 = sub nsw i64 %181, %182
+  store i64 %183, ptr %18, align 8
+  %184 = load i64, ptr %12, align 8
+  %185 = load i64, ptr %13, align 8
+  %186 = add nsw i64 %184, %185
+  store i64 %186, ptr %16, align 8
+  %187 = load i64, ptr %12, align 8
+  %188 = load i64, ptr %13, align 8
+  %189 = sub nsw i64 %187, %188
+  store i64 %189, ptr %17, align 8
+  %190 = load ptr, ptr %24, align 8
+  %191 = getelementptr inbounds i16, ptr %190, i64 56
+  %192 = load i16, ptr %191, align 2
+  %193 = sext i16 %192 to i32
+  %194 = load ptr, ptr %25, align 8
+  %195 = getelementptr inbounds i32, ptr %194, i64 56
+  %196 = load i32, ptr %195, align 4
+  %197 = mul nsw i32 %193, %196
+  %198 = sext i32 %197 to i64
+  store i64 %198, ptr %11, align 8
+  %199 = load ptr, ptr %24, align 8
+  %200 = getelementptr inbounds i16, ptr %199, i64 40
+  %201 = load i16, ptr %200, align 2
+  %202 = sext i16 %201 to i32
+  %203 = load ptr, ptr %25, align 8
+  %204 = getelementptr inbounds i32, ptr %203, i64 40
+  %205 = load i32, ptr %204, align 4
+  %206 = mul nsw i32 %202, %205
+  %207 = sext i32 %206 to i64
+  store i64 %207, ptr %12, align 8
+  %208 = load ptr, ptr %24, align 8
+  %209 = getelementptr inbounds i16, ptr %208, i64 24
+  %210 = load i16, ptr %209, align 2
+  %211 = sext i16 %210 to i32
+  %212 = load ptr, ptr %25, align 8
+  %213 = getelementptr inbounds i32, ptr %212, i64 24
+  %214 = load i32, ptr %213, align 4
+  %215 = mul nsw i32 %211, %214
+  %216 = sext i32 %215 to i64
+  store i64 %216, ptr %13, align 8
+  %217 = load ptr, ptr %24, align 8
+  %218 = getelementptr inbounds i16, ptr %217, i64 8
+  %219 = load i16, ptr %218, align 2
+  %220 = sext i16 %219 to i32
+  %221 = load ptr, ptr %25, align 8
+  %222 = getelementptr inbounds i32, ptr %221, i64 8
+  %223 = load i32, ptr %222, align 4
+  %224 = mul nsw i32 %220, %223
+  %225 = sext i32 %224 to i64
+  store i64 %225, ptr %14, align 8
+  %226 = load i64, ptr %11, align 8
+  %227 = load i64, ptr %14, align 8
+  %228 = add nsw i64 %226, %227
+  store i64 %228, ptr %19, align 8
+  %229 = load i64, ptr %12, align 8
+  %230 = load i64, ptr %13, align 8
+  %231 = add nsw i64 %229, %230
+  store i64 %231, ptr %20, align 8
+  %232 = load i64, ptr %11, align 8
+  %233 = load i64, ptr %13, align 8
+  %234 = add nsw i64 %232, %233
+  store i64 %234, ptr %21, align 8
+  %235 = load i64, ptr %12, align 8
+  %236 = load i64, ptr %14, align 8
+  %237 = add nsw i64 %235, %236
+  store i64 %237, ptr %22, align 8
+  %238 = load i64, ptr %21, align 8
+  %239 = load i64, ptr %22, align 8
+  %240 = add nsw i64 %238, %239
+  %241 = mul nsw i64 %240, 9633
+  store i64 %241, ptr %23, align 8
+  %242 = load i64, ptr %11, align 8
+  %243 = mul nsw i64 %242, 2446
+  store i64 %243, ptr %11, align 8
+  %244 = load i64, ptr %12, align 8
+  %245 = mul nsw i64 %244, 16819
+  store i64 %245, ptr %12, align 8
+  %246 = load i64, ptr %13, align 8
+  %247 = mul nsw i64 %246, 25172
+  store i64 %247, ptr %13, align 8
+  %248 = load i64, ptr %14, align 8
+  %249 = mul nsw i64 %248, 12299
+  store i64 %249, ptr %14, align 8
+  %250 = load i64, ptr %19, align 8
+  %251 = mul nsw i64 %250, -7373
+  store i64 %251, ptr %19, align 8
+  %252 = load i64, ptr %20, align 8
+  %253 = mul nsw i64 %252, -20995
+  store i64 %253, ptr %20, align 8
+  %254 = load i64, ptr %21, align 8
+  %255 = mul nsw i64 %254, -16069
+  store i64 %255, ptr %21, align 8
+  %256 = load i64, ptr %22, align 8
+  %257 = mul nsw i64 %256, -3196
+  store i64 %257, ptr %22, align 8
+  %258 = load i64, ptr %23, align 8
+  %259 = load i64, ptr %21, align 8
+  %260 = add nsw i64 %259, %258
+  store i64 %260, ptr %21, align 8
+  %261 = load i64, ptr %23, align 8
+  %262 = load i64, ptr %22, align 8
+  %263 = add nsw i64 %262, %261
+  store i64 %263, ptr %22, align 8
+  %264 = load i64, ptr %19, align 8
+  %265 = load i64, ptr %21, align 8
+  %266 = add nsw i64 %264, %265
+  %267 = load i64, ptr %11, align 8
+  %268 = add nsw i64 %267, %266
+  store i64 %268, ptr %11, align 8
+  %269 = load i64, ptr %20, align 8
+  %270 = load i64, ptr %22, align 8
+  %271 = add nsw i64 %269, %270
+  %272 = load i64, ptr %12, align 8
+  %273 = add nsw i64 %272, %271
+  store i64 %273, ptr %12, align 8
+  %274 = load i64, ptr %20, align 8
+  %275 = load i64, ptr %21, align 8
+  %276 = add nsw i64 %274, %275
+  %277 = load i64, ptr %13, align 8
+  %278 = add nsw i64 %277, %276
+  store i64 %278, ptr %13, align 8
+  %279 = load i64, ptr %19, align 8
+  %280 = load i64, ptr %22, align 8
+  %281 = add nsw i64 %279, %280
+  %282 = load i64, ptr %14, align 8
+  %283 = add nsw i64 %282, %281
+  store i64 %283, ptr %14, align 8
+  %284 = load i64, ptr %15, align 8
+  %285 = load i64, ptr %14, align 8
+  %286 = add nsw i64 %284, %285
+  %287 = add nsw i64 %286, 1024
+  %288 = ashr i64 %287, 11
+  %289 = trunc i64 %288 to i32
+  %290 = load ptr, ptr %26, align 8
+  %291 = getelementptr inbounds i32, ptr %290, i64 0
+  store i32 %289, ptr %291, align 4
+  %292 = load i64, ptr %15, align 8
+  %293 = load i64, ptr %14, align 8
+  %294 = sub nsw i64 %292, %293
+  %295 = add nsw i64 %294, 1024
+  %296 = ashr i64 %295, 11
+  %297 = trunc i64 %296 to i32
+  %298 = load ptr, ptr %26, align 8
+  %299 = getelementptr inbounds i32, ptr %298, i64 56
+  store i32 %297, ptr %299, align 4
+  %300 = load i64, ptr %16, align 8
+  %301 = load i64, ptr %13, align 8
+  %302 = add nsw i64 %300, %301
+  %303 = add nsw i64 %302, 1024
+  %304 = ashr i64 %303, 11
+  %305 = trunc i64 %304 to i32
+  %306 = load ptr, ptr %26, align 8
+  %307 = getelementptr inbounds i32, ptr %306, i64 8
+  store i32 %305, ptr %307, align 4
+  %308 = load i64, ptr %16, align 8
+  %309 = load i64, ptr %13, align 8
+  %310 = sub nsw i64 %308, %309
+  %311 = add nsw i64 %310, 1024
+  %312 = ashr i64 %311, 11
+  %313 = trunc i64 %312 to i32
+  %314 = load ptr, ptr %26, align 8
+  %315 = getelementptr inbounds i32, ptr %314, i64 48
+  store i32 %313, ptr %315, align 4
+  %316 = load i64, ptr %17, align 8
+  %317 = load i64, ptr %12, align 8
+  %318 = add nsw i64 %316, %317
+  %319 = add nsw i64 %318, 1024
+  %320 = ashr i64 %319, 11
+  %321 = trunc i64 %320 to i32
+  %322 = load ptr, ptr %26, align 8
+  %323 = getelementptr inbounds i32, ptr %322, i64 16
+  store i32 %321, ptr %323, align 4
+  %324 = load i64, ptr %17, align 8
+  %325 = load i64, ptr %12, align 8
+  %326 = sub nsw i64 %324, %325
+  %327 = add nsw i64 %326, 1024
+  %328 = ashr i64 %327, 11
+  %329 = trunc i64 %328 to i32
+  %330 = load ptr, ptr %26, align 8
+  %331 = getelementptr inbounds i32, ptr %330, i64 40
+  store i32 %329, ptr %331, align 4
+  %332 = load i64, ptr %18, align 8
+  %333 = load i64, ptr %11, align 8
+  %334 = add nsw i64 %332, %333
+  %335 = add nsw i64 %334, 1024
+  %336 = ashr i64 %335, 11
+  %337 = trunc i64 %336 to i32
+  %338 = load ptr, ptr %26, align 8
+  %339 = getelementptr inbounds i32, ptr %338, i64 24
+  store i32 %337, ptr %339, align 4
+  %340 = load i64, ptr %18, align 8
+  %341 = load i64, ptr %11, align 8
+  %342 = sub nsw i64 %340, %341
+  %343 = add nsw i64 %342, 1024
+  %344 = ashr i64 %343, 11
+  %345 = trunc i64 %344 to i32
+  %346 = load ptr, ptr %26, align 8
+  %347 = getelementptr inbounds i32, ptr %346, i64 32
+  store i32 %345, ptr %347, align 4
+  %348 = load ptr, ptr %24, align 8
+  %349 = getelementptr inbounds i16, ptr %348, i32 1
+  store ptr %349, ptr %24, align 8
+  %350 = load ptr, ptr %25, align 8
+  %351 = getelementptr inbounds i32, ptr %350, i32 1
+  store ptr %351, ptr %25, align 8
+  %352 = load ptr, ptr %26, align 8
+  %353 = getelementptr inbounds i32, ptr %352, i32 1
+  store ptr %353, ptr %26, align 8
+  br label %354
+
+354:                                              ; preds = %121, %81
+  %355 = load i32, ptr %29, align 4
+  %356 = add nsw i32 %355, -1
+  store i32 %356, ptr %29, align 4
+  br label %42, !llvm.loop !6
+
+357:                                              ; preds = %42
+  %358 = getelementptr inbounds [64 x i32], ptr %30, i64 0, i64 0
+  store ptr %358, ptr %26, align 8
+  store i32 0, ptr %29, align 4
+  br label %359
+
+359:                                              ; preds = %671, %357
+  %360 = load i32, ptr %29, align 4
+  %361 = icmp slt i32 %360, 8
+  br i1 %361, label %362, label %674
+
+362:                                              ; preds = %359
+  %363 = load ptr, ptr %9, align 8
+  %364 = load i32, ptr %29, align 4
+  %365 = sext i32 %364 to i64
+  %366 = getelementptr inbounds ptr, ptr %363, i64 %365
+  %367 = load ptr, ptr %366, align 8
+  %368 = load i32, ptr %10, align 4
+  %369 = zext i32 %368 to i64
+  %370 = getelementptr inbounds i8, ptr %367, i64 %369
+  store ptr %370, ptr %27, align 8
+  %371 = load ptr, ptr %26, align 8
+  %372 = getelementptr inbounds i32, ptr %371, i64 1
+  %373 = load i32, ptr %372, align 4
+  %374 = load ptr, ptr %26, align 8
+  %375 = getelementptr inbounds i32, ptr %374, i64 2
+  %376 = load i32, ptr %375, align 4
+  %377 = or i32 %373, %376
+  %378 = load ptr, ptr %26, align 8
+  %379 = getelementptr inbounds i32, ptr %378, i64 3
+  %380 = load i32, ptr %379, align 4
+  %381 = or i32 %377, %380
+  %382 = load ptr, ptr %26, align 8
+  %383 = getelementptr inbounds i32, ptr %382, i64 4
+  %384 = load i32, ptr %383, align 4
+  %385 = or i32 %381, %384
+  %386 = load ptr, ptr %26, align 8
+  %387 = getelementptr inbounds i32, ptr %386, i64 5
+  %388 = load i32, ptr %387, align 4
+  %389 = or i32 %385, %388
+  %390 = load ptr, ptr %26, align 8
+  %391 = getelementptr inbounds i32, ptr %390, i64 6
+  %392 = load i32, ptr %391, align 4
+  %393 = or i32 %389, %392
+  %394 = load ptr, ptr %26, align 8
+  %395 = getelementptr inbounds i32, ptr %394, i64 7
+  %396 = load i32, ptr %395, align 4
+  %397 = or i32 %393, %396
+  %398 = icmp eq i32 %397, 0
+  br i1 %398, label %399, label %438
+
+399:                                              ; preds = %362
+  %400 = load ptr, ptr %28, align 8
+  %401 = load ptr, ptr %26, align 8
+  %402 = getelementptr inbounds i32, ptr %401, i64 0
+  %403 = load i32, ptr %402, align 4
+  %404 = sext i32 %403 to i64
+  %405 = add nsw i64 %404, 16
+  %406 = ashr i64 %405, 5
+  %407 = trunc i64 %406 to i32
+  %408 = and i32 %407, 1023
+  %409 = sext i32 %408 to i64
+  %410 = getelementptr inbounds i8, ptr %400, i64 %409
+  %411 = load i8, ptr %410, align 1
+  store i8 %411, ptr %32, align 1
+  %412 = load i8, ptr %32, align 1
+  %413 = load ptr, ptr %27, align 8
+  %414 = getelementptr inbounds i8, ptr %413, i64 0
+  store i8 %412, ptr %414, align 1
+  %415 = load i8, ptr %32, align 1
+  %416 = load ptr, ptr %27, align 8
+  %417 = getelementptr inbounds i8, ptr %416, i64 1
+  store i8 %415, ptr %417, align 1
+  %418 = load i8, ptr %32, align 1
+  %419 = load ptr, ptr %27, align 8
+  %420 = getelementptr inbounds i8, ptr %419, i64 2
+  store i8 %418, ptr %420, align 1
+  %421 = load i8, ptr %32, align 1
+  %422 = load ptr, ptr %27, align 8
+  %423 = getelementptr inbounds i8, ptr %422, i64 3
+  store i8 %421, ptr %423, align 1
+  %424 = load i8, ptr %32, align 1
+  %425 = load ptr, ptr %27, align 8
+  %426 = getelementptr inbounds i8, ptr %425, i64 4
+  store i8 %424, ptr %426, align 1
+  %427 = load i8, ptr %32, align 1
+  %428 = load ptr, ptr %27, align 8
+  %429 = getelementptr inbounds i8, ptr %428, i64 5
+  store i8 %427, ptr %429, align 1
+  %430 = load i8, ptr %32, align 1
+  %431 = load ptr, ptr %27, align 8
+  %432 = getelementptr inbounds i8, ptr %431, i64 6
+  store i8 %430, ptr %432, align 1
+  %433 = load i8, ptr %32, align 1
+  %434 = load ptr, ptr %27, align 8
+  %435 = getelementptr inbounds i8, ptr %434, i64 7
+  store i8 %433, ptr %435, align 1
+  %436 = load ptr, ptr %26, align 8
+  %437 = getelementptr inbounds i32, ptr %436, i64 8
+  store ptr %437, ptr %26, align 8
+  br label %671
+
+438:                                              ; preds = %362
+  %439 = load ptr, ptr %26, align 8
+  %440 = getelementptr inbounds i32, ptr %439, i64 2
+  %441 = load i32, ptr %440, align 4
+  %442 = sext i32 %441 to i64
+  store i64 %442, ptr %20, align 8
+  %443 = load ptr, ptr %26, align 8
+  %444 = getelementptr inbounds i32, ptr %443, i64 6
+  %445 = load i32, ptr %444, align 4
+  %446 = sext i32 %445 to i64
+  store i64 %446, ptr %21, align 8
+  %447 = load i64, ptr %20, align 8
+  %448 = load i64, ptr %21, align 8
+  %449 = add nsw i64 %447, %448
+  %450 = mul nsw i64 %449, 4433
+  store i64 %450, ptr %19, align 8
+  %451 = load i64, ptr %19, align 8
+  %452 = load i64, ptr %21, align 8
+  %453 = mul nsw i64 %452, -15137
+  %454 = add nsw i64 %451, %453
+  store i64 %454, ptr %13, align 8
+  %455 = load i64, ptr %19, align 8
+  %456 = load i64, ptr %20, align 8
+  %457 = mul nsw i64 %456, 6270
+  %458 = add nsw i64 %455, %457
+  store i64 %458, ptr %14, align 8
+  %459 = load ptr, ptr %26, align 8
+  %460 = getelementptr inbounds i32, ptr %459, i64 0
+  %461 = load i32, ptr %460, align 4
+  %462 = sext i32 %461 to i64
+  %463 = load ptr, ptr %26, align 8
+  %464 = getelementptr inbounds i32, ptr %463, i64 4
+  %465 = load i32, ptr %464, align 4
+  %466 = sext i32 %465 to i64
+  %467 = add nsw i64 %462, %466
+  %468 = shl i64 %467, 13
+  store i64 %468, ptr %11, align 8
+  %469 = load ptr, ptr %26, align 8
+  %470 = getelementptr inbounds i32, ptr %469, i64 0
+  %471 = load i32, ptr %470, align 4
+  %472 = sext i32 %471 to i64
+  %473 = load ptr, ptr %26, align 8
+  %474 = getelementptr inbounds i32, ptr %473, i64 4
+  %475 = load i32, ptr %474, align 4
+  %476 = sext i32 %475 to i64
+  %477 = sub nsw i64 %472, %476
+  %478 = shl i64 %477, 13
+  store i64 %478, ptr %12, align 8
+  %479 = load i64, ptr %11, align 8
+  %480 = load i64, ptr %14, align 8
+  %481 = add nsw i64 %479, %480
+  store i64 %481, ptr %15, align 8
+  %482 = load i64, ptr %11, align 8
+  %483 = load i64, ptr %14, align 8
+  %484 = sub nsw i64 %482, %483
+  store i64 %484, ptr %18, align 8
+  %485 = load i64, ptr %12, align 8
+  %486 = load i64, ptr %13, align 8
+  %487 = add nsw i64 %485, %486
+  store i64 %487, ptr %16, align 8
+  %488 = load i64, ptr %12, align 8
+  %489 = load i64, ptr %13, align 8
+  %490 = sub nsw i64 %488, %489
+  store i64 %490, ptr %17, align 8
+  %491 = load ptr, ptr %26, align 8
+  %492 = getelementptr inbounds i32, ptr %491, i64 7
+  %493 = load i32, ptr %492, align 4
+  %494 = sext i32 %493 to i64
+  store i64 %494, ptr %11, align 8
+  %495 = load ptr, ptr %26, align 8
+  %496 = getelementptr inbounds i32, ptr %495, i64 5
+  %497 = load i32, ptr %496, align 4
+  %498 = sext i32 %497 to i64
+  store i64 %498, ptr %12, align 8
+  %499 = load ptr, ptr %26, align 8
+  %500 = getelementptr inbounds i32, ptr %499, i64 3
+  %501 = load i32, ptr %500, align 4
+  %502 = sext i32 %501 to i64
+  store i64 %502, ptr %13, align 8
+  %503 = load ptr, ptr %26, align 8
+  %504 = getelementptr inbounds i32, ptr %503, i64 1
+  %505 = load i32, ptr %504, align 4
+  %506 = sext i32 %505 to i64
+  store i64 %506, ptr %14, align 8
+  %507 = load i64, ptr %11, align 8
+  %508 = load i64, ptr %14, align 8
+  %509 = add nsw i64 %507, %508
+  store i64 %509, ptr %19, align 8
+  %510 = load i64, ptr %12, align 8
+  %511 = load i64, ptr %13, align 8
+  %512 = add nsw i64 %510, %511
+  store i64 %512, ptr %20, align 8
+  %513 = load i64, ptr %11, align 8
+  %514 = load i64, ptr %13, align 8
+  %515 = add nsw i64 %513, %514
+  store i64 %515, ptr %21, align 8
+  %516 = load i64, ptr %12, align 8
+  %517 = load i64, ptr %14, align 8
+  %518 = add nsw i64 %516, %517
+  store i64 %518, ptr %22, align 8
+  %519 = load i64, ptr %21, align 8
+  %520 = load i64, ptr %22, align 8
+  %521 = add nsw i64 %519, %520
+  %522 = mul nsw i64 %521, 9633
+  store i64 %522, ptr %23, align 8
+  %523 = load i64, ptr %11, align 8
+  %524 = mul nsw i64 %523, 2446
+  store i64 %524, ptr %11, align 8
+  %525 = load i64, ptr %12, align 8
+  %526 = mul nsw i64 %525, 16819
+  store i64 %526, ptr %12, align 8
+  %527 = load i64, ptr %13, align 8
+  %528 = mul nsw i64 %527, 25172
+  store i64 %528, ptr %13, align 8
+  %529 = load i64, ptr %14, align 8
+  %530 = mul nsw i64 %529, 12299
+  store i64 %530, ptr %14, align 8
+  %531 = load i64, ptr %19, align 8
+  %532 = mul nsw i64 %531, -7373
+  store i64 %532, ptr %19, align 8
+  %533 = load i64, ptr %20, align 8
+  %534 = mul nsw i64 %533, -20995
+  store i64 %534, ptr %20, align 8
+  %535 = load i64, ptr %21, align 8
+  %536 = mul nsw i64 %535, -16069
+  store i64 %536, ptr %21, align 8
+  %537 = load i64, ptr %22, align 8
+  %538 = mul nsw i64 %537, -3196
+  store i64 %538, ptr %22, align 8
+  %539 = load i64, ptr %23, align 8
+  %540 = load i64, ptr %21, align 8
+  %541 = add nsw i64 %540, %539
+  store i64 %541, ptr %21, align 8
+  %542 = load i64, ptr %23, align 8
+  %543 = load i64, ptr %22, align 8
+  %544 = add nsw i64 %543, %542
+  store i64 %544, ptr %22, align 8
+  %545 = load i64, ptr %19, align 8
+  %546 = load i64, ptr %21, align 8
+  %547 = add nsw i64 %545, %546
+  %548 = load i64, ptr %11, align 8
+  %549 = add nsw i64 %548, %547
+  store i64 %549, ptr %11, align 8
+  %550 = load i64, ptr %20, align 8
+  %551 = load i64, ptr %22, align 8
+  %552 = add nsw i64 %550, %551
+  %553 = load i64, ptr %12, align 8
+  %554 = add nsw i64 %553, %552
+  store i64 %554, ptr %12, align 8
+  %555 = load i64, ptr %20, align 8
+  %556 = load i64, ptr %21, align 8
+  %557 = add nsw i64 %555, %556
+  %558 = load i64, ptr %13, align 8
+  %559 = add nsw i64 %558, %557
+  store i64 %559, ptr %13, align 8
+  %560 = load i64, ptr %19, align 8
+  %561 = load i64, ptr %22, align 8
+  %562 = add nsw i64 %560, %561
+  %563 = load i64, ptr %14, align 8
+  %564 = add nsw i64 %563, %562
+  store i64 %564, ptr %14, align 8
+  %565 = load ptr, ptr %28, align 8
+  %566 = load i64, ptr %15, align 8
+  %567 = load i64, ptr %14, align 8
+  %568 = add nsw i64 %566, %567
+  %569 = add nsw i64 %568, 131072
+  %570 = ashr i64 %569, 18
+  %571 = trunc i64 %570 to i32
+  %572 = and i32 %571, 1023
+  %573 = sext i32 %572 to i64
+  %574 = getelementptr inbounds i8, ptr %565, i64 %573
+  %575 = load i8, ptr %574, align 1
+  %576 = load ptr, ptr %27, align 8
+  %577 = getelementptr inbounds i8, ptr %576, i64 0
+  store i8 %575, ptr %577, align 1
+  %578 = load ptr, ptr %28, align 8
+  %579 = load i64, ptr %15, align 8
+  %580 = load i64, ptr %14, align 8
+  %581 = sub nsw i64 %579, %580
+  %582 = add nsw i64 %581, 131072
+  %583 = ashr i64 %582, 18
+  %584 = trunc i64 %583 to i32
+  %585 = and i32 %584, 1023
+  %586 = sext i32 %585 to i64
+  %587 = getelementptr inbounds i8, ptr %578, i64 %586
+  %588 = load i8, ptr %587, align 1
+  %589 = load ptr, ptr %27, align 8
+  %590 = getelementptr inbounds i8, ptr %589, i64 7
+  store i8 %588, ptr %590, align 1
+  %591 = load ptr, ptr %28, align 8
+  %592 = load i64, ptr %16, align 8
+  %593 = load i64, ptr %13, align 8
+  %594 = add nsw i64 %592, %593
+  %595 = add nsw i64 %594, 131072
+  %596 = ashr i64 %595, 18
+  %597 = trunc i64 %596 to i32
+  %598 = and i32 %597, 1023
+  %599 = sext i32 %598 to i64
+  %600 = getelementptr inbounds i8, ptr %591, i64 %599
+  %601 = load i8, ptr %600, align 1
+  %602 = load ptr, ptr %27, align 8
+  %603 = getelementptr inbounds i8, ptr %602, i64 1
+  store i8 %601, ptr %603, align 1
+  %604 = load ptr, ptr %28, align 8
+  %605 = load i64, ptr %16, align 8
+  %606 = load i64, ptr %13, align 8
+  %607 = sub nsw i64 %605, %606
+  %608 = add nsw i64 %607, 131072
+  %609 = ashr i64 %608, 18
+  %610 = trunc i64 %609 to i32
+  %611 = and i32 %610, 1023
+  %612 = sext i32 %611 to i64
+  %613 = getelementptr inbounds i8, ptr %604, i64 %612
+  %614 = load i8, ptr %613, align 1
+  %615 = load ptr, ptr %27, align 8
+  %616 = getelementptr inbounds i8, ptr %615, i64 6
+  store i8 %614, ptr %616, align 1
+  %617 = load ptr, ptr %28, align 8
+  %618 = load i64, ptr %17, align 8
+  %619 = load i64, ptr %12, align 8
+  %620 = add nsw i64 %618, %619
+  %621 = add nsw i64 %620, 131072
+  %622 = ashr i64 %621, 18
+  %623 = trunc i64 %622 to i32
+  %624 = and i32 %623, 1023
+  %625 = sext i32 %624 to i64
+  %626 = getelementptr inbounds i8, ptr %617, i64 %625
+  %627 = load i8, ptr %626, align 1
+  %628 = load ptr, ptr %27, align 8
+  %629 = getelementptr inbounds i8, ptr %628, i64 2
+  store i8 %627, ptr %629, align 1
+  %630 = load ptr, ptr %28, align 8
+  %631 = load i64, ptr %17, align 8
+  %632 = load i64, ptr %12, align 8
+  %633 = sub nsw i64 %631, %632
+  %634 = add nsw i64 %633, 131072
+  %635 = ashr i64 %634, 18
+  %636 = trunc i64 %635 to i32
+  %637 = and i32 %636, 1023
+  %638 = sext i32 %637 to i64
+  %639 = getelementptr inbounds i8, ptr %630, i64 %638
+  %640 = load i8, ptr %639, align 1
+  %641 = load ptr, ptr %27, align 8
+  %642 = getelementptr inbounds i8, ptr %641, i64 5
+  store i8 %640, ptr %642, align 1
+  %643 = load ptr, ptr %28, align 8
+  %644 = load i64, ptr %18, align 8
+  %645 = load i64, ptr %11, align 8
+  %646 = add nsw i64 %644, %645
+  %647 = add nsw i64 %646, 131072
+  %648 = ashr i64 %647, 18
+  %649 = trunc i64 %648 to i32
+  %650 = and i32 %649, 1023
+  %651 = sext i32 %650 to i64
+  %652 = getelementptr inbounds i8, ptr %643, i64 %651
+  %653 = load i8, ptr %652, align 1
+  %654 = load ptr, ptr %27, align 8
+  %655 = getelementptr inbounds i8, ptr %654, i64 3
+  store i8 %653, ptr %655, align 1
+  %656 = load ptr, ptr %28, align 8
+  %657 = load i64, ptr %18, align 8
+  %658 = load i64, ptr %11, align 8
+  %659 = sub nsw i64 %657, %658
+  %660 = add nsw i64 %659, 131072
+  %661 = ashr i64 %660, 18
+  %662 = trunc i64 %661 to i32
+  %663 = and i32 %662, 1023
+  %664 = sext i32 %663 to i64
+  %665 = getelementptr inbounds i8, ptr %656, i64 %664
+  %666 = load i8, ptr %665, align 1
+  %667 = load ptr, ptr %27, align 8
+  %668 = getelementptr inbounds i8, ptr %667, i64 4
+  store i8 %666, ptr %668, align 1
+  %669 = load ptr, ptr %26, align 8
+  %670 = getelementptr inbounds i32, ptr %669, i64 8
+  store ptr %670, ptr %26, align 8
+  br label %671
+
+671:                                              ; preds = %438, %399
+  %672 = load i32, ptr %29, align 4
+  %673 = add nsw i32 %672, 1
+  store i32 %673, ptr %29, align 4
+  br label %359, !llvm.loop !8
+
+674:                                              ; preds = %359
+  ret void
+}
+
+attributes #0 = { noinline nounwind uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
+
+!llvm.module.flags = !{!0, !1, !2, !3, !4}
+!llvm.ident = !{!5}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{i32 7, !"PIC Level", i32 2}
+!2 = !{i32 7, !"PIE Level", i32 2}
+!3 = !{i32 7, !"uwtable", i32 2}
+!4 = !{i32 7, !"frame-pointer", i32 2}
+!5 = !{!"Ubuntu clang version 15.0.7"}
+!6 = distinct !{!6, !7}
+!7 = !{!"llvm.loop.mustprogress"}
+!8 = distinct !{!8, !7}

@@ -1,5 +1,6 @@
 import json
 import sys
+import subprocess
 import importlib_resources as resources
 from pathlib import Path
 from csstuning.compiler.benchmark import GCCBenchmark, LLVMBenchmark
@@ -153,6 +154,10 @@ def handle(args):
         return {"return": 1, "msg": "Invalid software type!",
                 "callback": print_usage}
 
+def setup_docker_compiler():
+    pkg_path = resources.files('cssbench')
+    script_path = pkg_path / "compiler/docker/build_docker.sh"
+    subprocess.run(str(script_path), shell=True)
 
 def print_usage(type):
     if type == "compiler":

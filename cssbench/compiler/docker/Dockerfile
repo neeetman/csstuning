@@ -29,3 +29,8 @@ RUN apt-get update \
 
 
 COPY benchmark /benchmark
+RUN /bin/bash /benchmark/init.sh
+
+ENV PAPI_DIR=/benchmark/utilities/papi \
+    POLYBENCH_DIR=/benchmark/utilities/polybench \
+    LD_LIBRARY_PATH=${PAPI_DIR}/lib:${POLYBENCH_DIR}/lib:${LD_LIBRARY_PATH}
