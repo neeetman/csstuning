@@ -44,7 +44,7 @@ python setup.py install --user
 
 ### 1.Compiler Benchmarks
 
-# Use command line #
+# Use via command line #
 
 # GCC compiler #
 
