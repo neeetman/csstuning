@@ -32,12 +32,7 @@ Big data system //to do
 - Python 3.8+
 
 ```
-git clone https://github.com/neeetman/csstuning.git
-cd path/to/csstuning
-#modify PAPI permissions for compiler benchmark
-sudo sh -c "echo -1 > /proc/sys/kernel/perf_event_paranoid"
-##installation
-python setup.py install --user
+pip install csstuning --user
 ```
 
 ## Usage
