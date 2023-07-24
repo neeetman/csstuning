@@ -6,6 +6,11 @@ CSSTuning is a comprehensive benchmark tool that caters to various real-world so
 
 Optimizing software configurations is a crucial aspect of performance tuning for a wide array of applications and systems. CSSTuning aims to address this need by providing an extensive collection of benchmark scenarios, each representing authentic software configuration optimization problems. Whether you are a developer, researcher, or enthusiast, CSSTuning provides an invaluable resource for assessing and optimizing the performance of diverse software configurations.
 
+## Overview
+The following block diagram shows the rough internal structure of CSStuing:
+
+![system_structure](https://github.com/neeetman/csstuning/assets/71478917/ee799329-09b5-4fb1-b43a-1075235a7f70)
+
 ## Benchmark List
 
 Compiler
