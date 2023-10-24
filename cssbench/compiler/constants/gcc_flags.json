@@ -111,7 +111,7 @@
     ],
     "Param": [
         "falign-functions=n:m:n1:m1                   16",
-        "falign-jumps=n:m:n1:m1                      16:11:8",
+        "falign-jumps=n:m:n1:m1                       16:11:8",
         "falign-labels=n:m:n1:m1                      0:0:8",
         "falign-loops=n:m:n1:m1                       16:11:8",
         "freorder-blocks-algorithm=[simple|stc]       stc",

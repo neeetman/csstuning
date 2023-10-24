@@ -1,0 +1,51 @@
+[mysqld]
+
+# Query and connection settings
+long_query_time = {{ long_query_time }}
+max_connections = {{ max_connections }}
+wait_timeout = {{ wait_timeout }}
+interactive_timeout = {{ interactive_timeout }}
+{% if skip_name_resolve %}skip_name_resolve{% endif %}
+query_cache_limit = {{ query_cache_limit }}
+query_cache_size = {{ query_cache_size }}
+query_cache_type = {{ query_cache_type }}
+sort_buffer_size = {{ sort_buffer_size }}
+read_rnd_buffer_size = {{ read_rnd_buffer_size }}
+join_buffer_size = {{ join_buffer_size }}
+tmp_table_size = {{ tmp_table_size }}
+max_heap_table_size = {{ max_heap_table_size }}
+
+# Thread and table settings
+thread_cache_size = {{ thread_cache_size }}
+table_open_cache = {{ table_open_cache }}
+table_definition_cache = {{ table_definition_cache }}
+open_files_limit = {{ open_files_limit }}
+
+# Binary log and key settings
+binlog_cache_size = {{ binlog_cache_size }}
+key_buffer_size = {{ key_buffer_size }}
+
+# Thread pooling (if applicable)
+thread_handling = {{ thread_handling }}
+thread_pool_size = {{ thread_pool_size }}
+
+# Performance schema
+{% if performance_schema %}performance_schema{% endif %}
+
+# Galera cluster (if applicable)
+innodb_autoinc_lock_mode = {{ innodb_autoinc_lock_mode }}
+binlog_format = {{ binlog_format }}
+
+# InnoDB settings
+innodb_flush_log_at_trx_commit = {{ innodb_flush_log_at_trx_commit }}
+{% if innodb_file_per_table %}innodb_file_per_table{% endif %}
+innodb_buffer_pool_size = {{ innodb_buffer_pool_size }}
+innodb_redo_log_capacity = {{ innodb_redo_log_capacity }}
+innodb_log_file_size = {{ innodb_log_file_size }}
+innodb_buffer_pool_instances = {{ innodb_buffer_pool_instances }}
+innodb_buffer_pool_chunk_size = {{ innodb_buffer_pool_chunk_size }}
+innodb_log_buffer_size = {{ innodb_log_buffer_size }}
+{% if innodb_stats_on_metadata %}innodb_stats_on_metadata{% endif %}
+innodb_thread_concurrency = {{ innodb_thread_concurrency }}
+read_buffer_size = {{ read_buffer_size }}
+innodb_lock_wait_timeout = {{ innodb_lock_wait_timeout }}
