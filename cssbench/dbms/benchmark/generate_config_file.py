@@ -58,3 +58,5 @@ if __name__ == "__main__":
 
     path = os.path.join(os.path.dirname(__file__), "mysql_template.cnf")
     generate_config("mysql_template.cnf", "my.cnf", test_config)
+
+    
