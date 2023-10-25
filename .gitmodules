@@ -1,0 +1,3 @@
+[submodule "cssbench/dbms/benchmark/benchbase"]
+	path = cssbench/dbms/benchmark/benchbase
+	url = git@github.com:neeetman/benchbase.git
