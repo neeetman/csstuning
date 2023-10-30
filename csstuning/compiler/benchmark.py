@@ -26,17 +26,17 @@ class CompilerBenchmarkBase(ABC):
         constants_path = "cssbench.compiler.constants"
         with resources.open_text(constants_path, "programs.json") as json_file:
             programs_dict = json.load(json_file)
-            self.benchmarks = programs_dict["cbench"] + \
-                programs_dict["polybench"]
+            self.benchmarks = programs_dict["cbench"] + programs_dict["polybench"]
 
         if self.docker_mode:
             self.client = docker.from_env()
             self.container = self.client.containers.run(
                 image=self.docker_image,
-                command=f"/bin/bash -c 'while true; do sleep 86400; done'",
+                command="/bin/sleep infinity",
+                # command=f"/bin/bash -c 'while true; do sleep 86400; done'",
                 privileged=True,
                 detach=True,
-                remove=True
+                remove=True,
             )
 
     @abstractmethod
@@ -80,8 +80,9 @@ class GCCBenchmark(CompilerBenchmarkBase):
         with resources.open_text(constants_path, "gcc_flags.json") as json_file:
             gcc_flags = json.load(json_file)
             # TODO: Handle param flags
-            self.flags = gcc_flags["O1"] + gcc_flags["O2"] + \
-                gcc_flags["O3"] + gcc_flags["Ofast"]
+            self.flags = (
+                gcc_flags["O1"] + gcc_flags["O2"] + gcc_flags["O3"] + gcc_flags["Ofast"]
+            )
             self.flags_to_disable = gcc_flags["O1"]
             self.param_flags = gcc_flags["Param"]
 
@@ -98,18 +99,18 @@ class GCCBenchmark(CompilerBenchmarkBase):
 
         return flagsstr
 
-    def run(self, benchmark, flags={}) -> dict:
-        return super().run(benchmark, flags)
-
     def run_in_docker(self, benchmark, flagstr="") -> dict:
-        print(f"Running benchmark {benchmark} with flags \"{flagstr}\"")
-        output = self.container.exec_run(
-            f"/bin/bash /benchmark/run.sh GCC {benchmark} \"{flagstr}\"",
-            stream=True
-        )
+        print(f'Running benchmark {benchmark} with flags "{flagstr}"')
+
+        try:
+            output = self.container.exec_run(
+                f'/bin/bash /benchmark/run.sh GCC {benchmark} "{flagstr}"', stream=True
+            )
+        except ContainerError as e:
+            return {"return": 1, "msg": f"Error running benchmark in docker: {str(e)}"}
 
         for line in output.output:
-            print(line.decode('utf-8'), end='')
+            print(line.decode("utf-8"), end="")
 
         return {}
 
@@ -117,17 +118,18 @@ class GCCBenchmark(CompilerBenchmarkBase):
         # current_dir = Path(__file__).resolve().parent.parent
 
         # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-        pkg_path = resources.files('cssbench')
+        pkg_path = resources.files("cssbench")
         benchmark_path = pkg_path / "compiler/benchmark/programs" / benchmark
         config_file = benchmark_path / "config.json"
 
-        with open(config_file, 'r') as f:
+        with open(config_file, "r") as f:
             config = json.load(f)
 
         if "build_compiler_vars" in config:
             build_compiler_vars = config["build_compiler_vars"]
             compile_vars = " ".join(
-                f"-D{var}={value}" for var, value in build_compiler_vars.items())
+                f"-D{var}={value}" for var, value in build_compiler_vars.items()
+            )
 
         repeat_times = config["repeat_times"]
         cmd = config["command"]
@@ -144,21 +146,16 @@ class GCCBenchmark(CompilerBenchmarkBase):
                 "OPTFLAGS": f"-O1 {flagstr}",
                 "MACORS": compile_vars,
             },
-            shell=True
+            shell=True,
         )
         compilation_time = time.time() - start
         print(f"Compilation time: {compilation_time}")
 
         subprocess.run(
-            cmd,
-            env={
-                **os.environ,
-                "BENCH_REPEAT_MAIN": str(repeat_times)
-            },
-            shell=True
+            cmd, env={**os.environ, "BENCH_REPEAT_MAIN": str(repeat_times)}, shell=True
         )
 
-        with open("tmp_timer.json", 'r') as f:
+        with open("tmp_timer.json", "r") as f:
             result = json.load(f)
 
         avrg_time = result["execution_time_0"] / repeat_times
@@ -184,8 +181,9 @@ class LLVMBenchmark(CompilerBenchmarkBase):
         constants_path = "cssbench.compiler.constants"
         with resources.open_text(constants_path, "llvm_passes.json") as json_file:
             llvm_passes = json.load(json_file)
-            self.flags = llvm_passes["analysis_passes"] + \
-                llvm_passes["transform_passes"]
+            self.flags = (
+                llvm_passes["analysis_passes"] + llvm_passes["transform_passes"]
+            )
             self.analysis_flags = llvm_passes["analysis_passes"]
 
     def preprocess_flags(self, flags={}) -> str:
@@ -209,20 +207,19 @@ class LLVMBenchmark(CompilerBenchmarkBase):
         return super().run(benchmark, flags)
 
     def run_in_docker(self, benchmark, flagstr="") -> dict:
-        print(f"Running benchmark {benchmark} with flags \"{flagstr}\"")
+        print(f'Running benchmark {benchmark} with flags "{flagstr}"')
         output = self.container.exec_run(
-            f"/bin/bash /benchmark/run.sh LLVM {benchmark} \"{flagstr}\"",
-            stream=True
+            f'/bin/bash /benchmark/run.sh LLVM {benchmark} "{flagstr}"', stream=True
         )
 
         for line in output.output:
-            print(line.decode('utf-8'), end='')
+            print(line.decode("utf-8"), end="")
 
         return {}
 
     def run_in_local(self, benchmark, flagstr="") -> dict:
         # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-        pkg_path = resources.files('cssbench')
+        pkg_path = resources.files("cssbench")
         benchmark_path = pkg_path / "compiler/benchmark/programs" / benchmark
         config_file = benchmark_path / "config.json"
 
@@ -232,7 +229,8 @@ class LLVMBenchmark(CompilerBenchmarkBase):
         if "build_compiler_vars" in config:
             build_compiler_vars = config["build_compiler_vars"]
             compile_vars = " ".join(
-                f"-D{var}={value}" for var, value in build_compiler_vars.items())
+                f"-D{var}={value}" for var, value in build_compiler_vars.items()
+            )
 
         repeat_times = config["repeat_times"]
         cmd = config["command"]
@@ -247,21 +245,16 @@ class LLVMBenchmark(CompilerBenchmarkBase):
                 **os.environ,
                 "COMPILER_TYPE": "LLVM",
                 "OPTFLAGS": flagstr,
-                "MACORS": compile_vars
+                "MACORS": compile_vars,
             },
-            shell=True
+            shell=True,
         )
 
         compilation_time = time.time() - start
         print(f"Compilation time: {compilation_time}")
 
         subprocess.run(
-            cmd,
-            env={
-                **os.environ,
-                "BENCH_REPEAT_MAIN": str(repeat_times)
-            },
-            shell=True
+            cmd, env={**os.environ, "BENCH_REPEAT_MAIN": str(repeat_times)}, shell=True
         )
 
         with open("tmp_timer.json", "r") as f:
@@ -270,13 +263,15 @@ class LLVMBenchmark(CompilerBenchmarkBase):
         avrg_time = result["execution_time_0"] / repeat_times
         file_size = os.stat("a.out").st_size
 
-        print(f"""
+        print(
+            f"""
         Compilation time: {compilation_time}
         Total execution time: {result['execution_time_0']}
         Number of repeats: {repeat_times}
         Average execution time: {avrg_time}
         Max resident set size: {result['maxrss']}
         File size (bytes): {file_size}
-        """)
+        """
+        )
 
         return {}

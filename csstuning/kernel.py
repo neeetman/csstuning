@@ -15,6 +15,8 @@ compiler_flags = {
     "llvm": []
 }
 
+# TODO:
+# 1. Store all config files in user's home directory
 
 def load_compiler_contants():
     global compiler_benchs
