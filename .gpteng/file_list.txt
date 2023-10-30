@@ -1,2 +1,0 @@
-/home/anshao/csstuning/csstuning/compiler/benchmark.py
-/home/anshao/csstuning/csstuning/dbms/benchmark.py
