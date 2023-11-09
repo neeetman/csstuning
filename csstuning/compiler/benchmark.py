@@ -20,11 +20,11 @@ class CompilerBenchmarkBase(ABC):
     @abstractmethod
     def initialize(self) -> None:
         # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-        # constants_path = pkg_path / "compiler/constants"
-        # constants_path = Path(pkg_resources.resource_filename('csstuning', 'compiler/constants'))
+        # config_path = pkg_path / "compiler/config"
+        # config_path = Path(pkg_resources.resource_filename('csstuning', 'compiler/config'))
 
-        constants_path = "cssbench.compiler.constants"
-        with resources.open_text(constants_path, "programs.json") as json_file:
+        config_path = "cssbench.compiler.config"
+        with resources.open_text(config_path, "programs.json") as json_file:
             programs_dict = json.load(json_file)
             self.benchmarks = programs_dict["cbench"] + programs_dict["polybench"]
 
@@ -73,11 +73,11 @@ class GCCBenchmark(CompilerBenchmarkBase):
     def initialize(self) -> None:
         super().initialize()
         # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-        # constants_path = pkg_path / "compiler/constants"
-        # constants_path = Path(pkg_resources.resource_filename('csstuning', 'compiler/constants'))
+        # config_path = pkg_path / "compiler/config"
+        # config_path = Path(pkg_resources.resource_filename('csstuning', 'compiler/config'))
 
-        constants_path = "cssbench.compiler.constants"
-        with resources.open_text(constants_path, "gcc_flags.json") as json_file:
+        config_path = "cssbench.compiler.config"
+        with resources.open_text(config_path, "gcc_flags.json") as json_file:
             gcc_flags = json.load(json_file)
             # TODO: Handle param flags
             self.flags = (
@@ -178,8 +178,8 @@ class LLVMBenchmark(CompilerBenchmarkBase):
         super().initialize()
         # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
 
-        constants_path = "cssbench.compiler.constants"
-        with resources.open_text(constants_path, "llvm_passes.json") as json_file:
+        config_path = "cssbench.compiler.config"
+        with resources.open_text(config_path, "llvm_passes.json") as json_file:
             llvm_passes = json.load(json_file)
             self.flags = (
                 llvm_passes["analysis_passes"] + llvm_passes["transform_passes"]

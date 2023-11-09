@@ -22,19 +22,19 @@ def load_compiler_contants():
     global compiler_benchs
     global compiler_flags
 
-    # constants_path = pkg_path / "compiler/constants"
-    constants_path = "cssbench.compiler.constants"
-    with resources.open_text(constants_path, 'gcc_flags.json') as json_file:
+    # config_path = pkg_path / "compiler/config"
+    config_path = "cssbench.compiler.config"
+    with resources.open_text(config_path, 'gcc_flags.json') as json_file:
         gcc_flag_dict = json.load(json_file)
         compiler_flags["gcc"] = gcc_flag_dict["O1"] + \
             gcc_flag_dict["O2"] + gcc_flag_dict["O3"] + gcc_flag_dict["Ofast"]
 
-    with resources.open_text(constants_path, 'llvm_passes.json') as json_file:
+    with resources.open_text(config_path, 'llvm_passes.json') as json_file:
         llvm_pass_dict = json.load(json_file)
         compiler_flags["llvm"] = llvm_pass_dict["analysis_passes"] + \
             llvm_pass_dict["transform_passes"]
 
-    with resources.open_text(constants_path, 'programs.json') as json_file:
+    with resources.open_text(config_path, 'programs.json') as json_file:
         benchs_dict = json.load(json_file)
         compiler_benchs = benchs_dict["cbench"] + benchs_dict["polybench"]
 
