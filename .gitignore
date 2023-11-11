@@ -1,5 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
 build/
+develop-eggs/
 dist/
-*egg-info/
+downloads/
+eggs/
+.eggs/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+*.log
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code
 .vscode/
+
+# Custom additions
 cssbench/dbms/benchmark/benchbase-mysql/

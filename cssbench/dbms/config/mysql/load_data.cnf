@@ -1,60 +1,24 @@
 [mysqld]
-# connection #
-interactive_timeout = 1800
-wait_timeout = 1800
-lock_wait_timeout = 1800
-skip_name_resolve = 1
-max_connections = 1024
-max_user_connections = 256
-max_connect_errors = 1000000
-
-# table cache performance settings
-table_open_cache = 4096
-table_definition_cache = 4096
-table_open_cache_instances = 64
-
-# session memory settings #
-read_buffer_size = 16M
-read_rnd_buffer_size = 32M
-sort_buffer_size = 32M
-tmp_table_size = 64M
-join_buffer_size = 128M
-thread_cache_size = 64
-
-# innodb settings #
-innodb_page_size = 16384
-innodb_buffer_pool_size = 160G
+innodb_buffer_pool_size = 140G
+innodb_log_file_size = 2G
 innodb_buffer_pool_instances = 16
-innodb_buffer_pool_load_at_startup = 1
-innodb_buffer_pool_dump_at_shutdown = 1
-innodb_lru_scan_depth = 4096
-innodb_lock_wait_timeout = 5
-innodb_io_capacity = 10000
-innodb_io_capacity_max = 20000
-innodb_flush_method = O_DIRECT
-innodb_undo_logs = 128
-innodb_flush_neighbors = 0
-innodb_log_file_size = 16G
-innodb_log_files_in_group = 2
-innodb_log_buffer_size = 64M
-innodb_purge_threads = 4
-innodb_large_prefix = 1
-innodb_thread_concurrency = 32
-innodb_print_all_deadlocks = 1
-innodb_strict_mode = 1
-innodb_sort_buffer_size = 64M
-innodb_write_io_threads = 16
-innodb_read_io_threads = 16
-innodb_file_per_table = 1
-innodb_stats_persistent_sample_pages = 64
-innodb_autoinc_lock_mode = 2
-innodb_online_alter_log_max_size=1G
-innodb_open_files=4096
 
-[mysqld-5.7]
-# new innodb settings #
-innodb_buffer_pool_dump_pct = 40
-innodb_page_cleaners = 16
-innodb_undo_log_truncate = 1
-innodb_max_undo_log_size = 2G
-innodb_purge_rseg_truncate_frequency = 128
+max_connections = 1000
+thread_cache_size = 100
+table_open_cache = 8000
+open_files_limit = 20000
+
+innodb_write_io_threads = 32
+innodb_read_io_threads = 32
+innodb_io_capacity = 4000
+innodb_io_capacity_max = 8000
+
+innodb_log_buffer_size = 512M
+binlog_format = ROW
+sync_binlog = 1
+
+query_cache_size = 0
+performance_schema = OFF
+
+skip_name_resolve
+innodb_flush_method = O_DIRECT

@@ -1,0 +1,313 @@
+import docker
+import docker.errors
+import os
+import time
+import pymysql
+import shutil
+from pathlib import Path
+from importlib import resources
+
+from csstuning.logger import logger
+from csstuning.config_loader import get_config
+from csstuning.dbms.dbms_config_space import MySQLConfigSpace
+
+
+class MySQLBenchmark:
+    def __init__(self, workload, knobs_file=None):
+        env_config = get_config()
+
+        # Update to use configuration values from config_loader
+        self.mysql_image = env_config.get("database", "mysql_image")
+        self.mysql_container_name = env_config.get("database", "mysql_container_name")
+        self.vcpus = env_config.getfloat("database", "mysql_vcpus")
+        self.mem = env_config.getfloat("database", "mysql_mem")
+        self.mysql_config_file = Path(env_config.get("database", "mysql_config_file"))
+        self.mysql_data_dir = Path(
+            env_config.get("database", "mysql_data_dir")
+        ).expanduser()
+
+        self.benchbase_image = env_config.get("database", "benchbase_image")
+        self.benchbase_container_name = env_config.get(
+            "database", "benchbase_container_name"
+        )
+        self.benchbase_config_dir = Path(
+            env_config.get("database", "benchbase_config_dir")
+        ).expanduser()
+        self.benchbase_results_dir = Path(
+            env_config.get("database", "benchbase_results_dir")
+        ).expanduser()
+
+        self.workload = workload
+        self.config_space = MySQLConfigSpace(knobs_file)
+        self.docker_client = docker.from_env()
+
+        self.initialize_benchmark_data_dir()
+
+    def initialize_benchmark_data_dir(self):
+        self.mysql_data_dir.mkdir(parents=True, exist_ok=True)
+        self.benchbase_config_dir.mkdir(parents=True, exist_ok=True)
+        self.benchbase_results_dir.mkdir(parents=True, exist_ok=True)
+
+        if not any(self.mysql_data_dir.iterdir()):
+            logger.info("Initializing MySQL data directory...")
+            self.start_mysql_and_wait(custom_config=False, limit_resources=False)
+
+        # Check if the directory is empty and requires initialization
+        if not any(self.benchbase_config_dir.iterdir()):
+            with resources.path(
+                "cssbench.dbms.config", "benchbase"
+            ) as pkg_benchbase_path:
+                for item in pkg_benchbase_path.iterdir():
+                    if item.is_dir():
+                        shutil.copytree(item, self.benchbase_config_dir / item.name)
+                    else:
+                        shutil.copy(item, self.benchbase_config_dir / item.name)
+
+            logger.info(
+                f"Initialized benchbase data directory at {self.benchbase_config_dir}"
+            )
+
+    def _remove_existing_container(self, container_name):
+        try:
+            container = self.docker_client.containers.get(container_name)
+            container.stop()
+            container.remove()
+        except docker.errors.NotFound:
+            pass
+        except docker.errors.DockerException as e:
+            logger.error(f"Error removing container {container_name}: {e}")
+
+        # Some error occurred after cleanup some files. Need to fix this.
+        # self._cleanup_mysql_data_dir()
+
+    def _cleanup_mysql_data_dir(self):
+        files_to_delete = ["ib_logfile"]
+
+        if self.mysql_data_dir.exists() and self.mysql_data_dir.is_dir():
+            try:
+                for item in self.mysql_data_dir.iterdir():
+                    if item.is_file() and any(
+                        item.name.startswith(pattern) for pattern in files_to_delete
+                    ):
+                        item.unlink()  # Deletes the file
+
+                logger.info(
+                    f"Cleaned up specified files in MySQL data directory at {self.mysql_data_dir}"
+                )
+            except Exception as e:
+                logger.error(f"Error cleaning up MySQL data directory: {e}")
+
+    def _gracefully_stop_mysql_container(self, container_name):
+        try:
+            container = self.docker_client.containers.get(container_name)
+
+            if container.status != "running":
+                container.remove(force=True)
+
+            logger.info(f"Sending shutdown command to MySQL container...")
+
+            shutdown_command = "mysqladmin shutdown -u root -ppassword"
+            container.exec_run(shutdown_command)
+
+            logger.info("Waiting for MySQL container to stop...")
+            timeout = 60
+            start_time = time.time()
+            while time.time() - start_time < timeout:
+                container.reload()
+                if container.status != "running":
+                    break
+                time.sleep(1)
+            else:
+                logger.warning(
+                    f"Timeout waiting for MySQL container {container_name} to stop."
+                )
+
+            container.stop()
+            container.remove()
+        except docker.errors.NotFound:
+            pass
+        except docker.errors.DockerException as e:
+            logger.error(
+                f"Error gracefully stopping MySQL container {container_name}: {e}"
+            )
+            self._remove_existing_container(container_name)
+
+    def start_mysql(self, custom_config=True, limit_resources=True):
+        self._gracefully_stop_mysql_container(self.mysql_container_name)
+
+        volumes = {
+            self.mysql_data_dir: {"bind": "/var/lib/mysql", "mode": "rw"},
+        }
+        if custom_config and self.mysql_config_file.is_file():
+            volumes[str(self.mysql_config_file)] = {
+                "bind": "/etc/mysql/conf.d/custom.cnf",
+                "mode": "rw",
+            }
+
+        environment = {
+            "MYSQL_ROOT_PASSWORD": "password",
+            "MYSQL_USER": "admin",
+            "MYSQL_PASSWORD": "password",
+            "MYSQL_DATABASE": "benchbase",
+        }
+        ports = {"3306/tcp": 3307}
+
+        logger.info("Starting MySQL container...")
+        if limit_resources:
+            self.mysql_container = self.docker_client.containers.run(
+                self.mysql_image,
+                name=self.mysql_container_name,
+                volumes=volumes,
+                environment=environment,
+                ports=ports,
+                user=f"{os.getuid()}:{os.getgid()}",
+                cpu_quota=int(self.vcpus * 100000),
+                mem_limit=f"{self.mem}g",
+                detach=True,
+            )
+        else:
+            self.mysql_container = self.docker_client.containers.run(
+                self.mysql_image,
+                name=self.mysql_container_name,
+                volumes=volumes,
+                environment=environment,
+                ports=ports,
+                user=f"{os.getuid()}:{os.getgid()}",
+                detach=True,
+            )
+
+    def start_mysql_and_wait(
+        self, custom_config=True, limit_resources=True, timeout=None
+    ) -> bool:
+        self.start_mysql(custom_config, limit_resources)
+        return self._wait_for_mysql_ready(timeout)
+
+    def create_database(self):
+        with resources.path("cssbench.dbms.config.mysql", "load_data.cnf") as conf_file:
+            try:
+                shutil.copyfile(conf_file, self.mysql_config_file)
+            except IOError as e:
+                logger.error(f"Failed to copy MySQL config file: {e}")
+                raise
+
+        if not self.start_mysql_and_wait(limit_resources=False, timeout=600):
+            raise RuntimeError("Failed to start MySQL container.")
+
+        logger.info(f"Loading database for {self.workload}...")
+
+        volumes_mapping = {
+            self.benchbase_config_dir: {
+                "bind": "/benchbase/config",
+                "mode": "rw",
+            }
+        }
+
+        try:
+            container = self.docker_client.containers.run(
+                self.benchbase_image,
+                name=self.benchbase_container_name,
+                network_mode="host",
+                volumes=volumes_mapping,
+                command=[
+                    "--bench",
+                    self.workload,
+                    "--config",
+                    f"/benchbase/config/sample_{self.workload}_config.xml",
+                    "--create=true",
+                    "--load=true",
+                ],
+                detach=True,
+                stdout=True,
+                stderr=True,
+                remove=True,
+            )
+
+            for line in container.logs(stream=True, follow=True):
+                logger.info(line.strip().decode("utf-8"))
+
+        except docker.errors.DockerException as e:
+            logger.error(f"Error running BenchBase container: {e}")
+            raise
+
+        logger.info("Database loaded successfully!")
+
+        self._gracefully_stop_mysql_container(self.mysql_container_name)
+
+    def _wait_for_mysql_ready(self, timeout=None):
+        default_timeout = get_config().getint("database", "mysql_start_timeout")
+        timeout = timeout or default_timeout
+
+        logger.info(f"Waiting for MySQL to start (timeout: {timeout} seconds)...")
+
+        start_time = time.time()
+        while True:
+            if self._is_mysql_ready():
+                logger.info("MySQL is ready!")
+                return True
+            if time.time() - start_time >= timeout:
+                logger.error(f"MySQL is not ready after {timeout} seconds.")
+                # It may be better to keep the container existing for debugging
+                # self.mysql_container.stop()
+                # self.mysql_container.remove()
+                return False
+            time.sleep(5)
+
+    def _is_mysql_ready(self):
+        try:
+            with pymysql.connect(
+                host="127.0.0.1", port=3307, user="admin", password="password"
+            ):
+                return True
+        except pymysql.err.OperationalError as e:
+            logger.warning(f"MySQL is not ready yet: {e}. Retrying...")
+            return False
+
+    def execute_benchmark(self):
+        volumes_mapping = {
+            self.benchbase_config_dir: {
+                "bind": "/benchbase/config",
+                "mode": "rw",
+            },
+            self.benchbase_results_dir: {
+                "bind": "/benchbase/results",
+                "mode": "rw",
+            },
+        }
+        try:
+            container = self.docker_client.containers.run(
+                self.benchbase_image,
+                name=self.benchbase_container_name,
+                network_mode="host",
+                volumes=volumes_mapping,
+                command=[
+                    "--bench",
+                    self.workload,
+                    "--config",
+                    f"/benchbase/config/sample_{self.workload}_config.xml",
+                    "--execute=true",
+                    "--sample 1",
+                    "--interval-monitor 1000",
+                    "--json-histograms results/histograms.json",
+                ],
+                stdout=True,
+                stderr=True,
+                remove=True,
+                detach=True,
+            )
+
+            for line in container.logs(stream=True, follow=True):
+                logger.info(line.strip().decode("utf-8"))
+
+        except docker.errors.DockerException as e:
+            logger.error(f"Error running BenchBase container: {e}")
+            raise
+
+    def get_config_space(self) -> dict:
+        return self.config_space.get_all_details()
+
+    def get_metrics(self, knobs):
+        self.set_knobs_and_eval()
+
+    def set_knobs_and_eval(self, knobs: dict):
+        self.config_space.set_current_config(knobs)
+        self.start_mysql_and_wait()
