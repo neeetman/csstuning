@@ -16,7 +16,8 @@
     <terminals>64</terminals>
     <works>
         <work>
-            <time>60</time>
+            <warmup>30</warmup>
+            <time>120</time>
             <rate>unlimited</rate>
             <weights>50,50</weights>
         </work>

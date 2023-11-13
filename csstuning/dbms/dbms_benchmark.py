@@ -4,6 +4,7 @@ import os
 import time
 import pymysql
 import shutil
+import json
 from pathlib import Path
 from importlib import resources
 
@@ -13,7 +14,23 @@ from csstuning.dbms.dbms_config_space import MySQLConfigSpace
 
 
 class MySQLBenchmark:
+    AVAILABLE_WORKLOADS = [
+        "tpcc",
+        "twitter",
+        "smallbank",
+        "sibench",
+        "voter",
+        "seats",
+        "tatp",
+    ]
+
     def __init__(self, workload, knobs_file=None):
+        if workload not in self.AVAILABLE_WORKLOADS:
+            logger.error(
+                f"Workload '{workload}' is not supported. Supported workloads: {self.AVAILABLE_WORKLOADS}"
+            )
+            raise ValueError(f"Workload '{workload}' is not supported.")
+
         env_config = get_config()
 
         # Update to use configuration values from config_loader
@@ -263,6 +280,11 @@ class MySQLBenchmark:
             return False
 
     def execute_benchmark(self):
+        # Clean up the results directory
+        for item in self.benchbase_results_dir.iterdir():
+            if item.is_file():
+                item.unlink()
+
         volumes_mapping = {
             self.benchbase_config_dir: {
                 "bind": "/benchbase/config",
@@ -300,14 +322,41 @@ class MySQLBenchmark:
 
         except docker.errors.DockerException as e:
             logger.error(f"Error running BenchBase container: {e}")
-            raise
+            raise RuntimeError("Failed to run BenchBase.")
 
     def get_config_space(self) -> dict:
         return self.config_space.get_all_details()
 
-    def get_metrics(self, knobs):
-        self.set_knobs_and_eval()
+    # def get_metrics(self, knobs):
+    #     self.run()
 
-    def set_knobs_and_eval(self, knobs: dict):
+    def run(self, knobs: dict) -> dict:
         self.config_space.set_current_config(knobs)
-        self.start_mysql_and_wait()
+
+        try:
+            self.start_mysql_and_wait()
+            self.execute_benchmark()
+            return self.parse_results()
+        except Exception as e:
+            logger.error(f"Error running MySQL benchmark: {e}")
+            raise
+
+    def parse_results(self) -> dict:
+        summary_file = None
+        for item in self.benchbase_results_dir.iterdir():
+            if item.is_file() and item.name.endswith(".summary.json"):
+                summary_file = item
+
+        if summary_file is None:
+            logger.error(f"No results found in {self.benchbase_results_dir}")
+            raise RuntimeError("No results found in the results directory.")
+
+        result = {}
+        with open(summary_file) as f:
+            summary = json.load(f)
+            result["latency"] = summary["Latency Distribution"][
+                "95th Percentile Latency (microseconds)"
+            ]
+            result["throughput"] = summary["Throughput (requests/second)"]
+
+        return result

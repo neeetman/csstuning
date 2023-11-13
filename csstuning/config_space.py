@@ -68,6 +68,9 @@ class ConfigSpace:
         }
 
     def set_current_config(self, config):
+        if config is None:
+            return
+
         for name, value in config.items():
             self.set_option_value(name, value)
 

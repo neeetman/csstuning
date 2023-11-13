@@ -23,7 +23,8 @@
     <terminals>64</terminals>
     <works>
         <work>
-            <time>60</time>
+            <warmup>30</warmup>
+            <time>120</time>
             <rate>10000</rate>
             <weights>1,1,7,90,1</weights>
         </work>

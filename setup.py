@@ -6,9 +6,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 # Add benchmarks to data_files
 data_files = []
-for floder, subfloders, files in os.walk("cssbench"):
+for folder, subfloders, files in os.walk("cssbench"):
     if len(files) > 0:
-        data_files.append((floder, [os.path.join(floder, f) for f in files]))
+        data_files.append((folder, [os.path.join(folder, f) for f in files]))
 
 setup(
     name="csstuning",
@@ -31,7 +31,7 @@ setup(
     entry_points={
         "console_scripts": [
             "csstuning=csstuning.kernel:cli",
-            "csstuning_setup_docker=csstuning.kernel:setup_docker_compiler",
+            "csstuning_setup_docker=csstuning.kernel:setup_docker",
         ]
     },
     install_requires=[

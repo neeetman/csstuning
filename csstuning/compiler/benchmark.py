@@ -3,7 +3,7 @@ import json
 import os
 import subprocess
 import time
-import importlib_resources as resources
+from importlib import resources
 from abc import ABC, abstractmethod
 from docker.errors import ContainerError
 from pathlib import Path
@@ -115,13 +115,9 @@ class GCCBenchmark(CompilerBenchmarkBase):
         return {}
 
     def run_in_local(self, benchmark, flagstr="") -> dict:
-        # current_dir = Path(__file__).resolve().parent.parent
+        benchmark_path = resources.path("cssbench.compiler.benchmark.programs", benchmark)
 
-        # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-        pkg_path = resources.files("cssbench")
-        benchmark_path = pkg_path / "compiler/benchmark/programs" / benchmark
         config_file = benchmark_path / "config.json"
-
         with open(config_file, "r") as f:
             config = json.load(f)
 
