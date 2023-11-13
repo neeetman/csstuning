@@ -35,7 +35,6 @@ setup(
         ]
     },
     install_requires=[
-        "importlib_resources",
         "docker"
     ],
     zip_safe=False
