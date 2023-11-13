@@ -99,6 +99,9 @@ class GCCBenchmark(CompilerBenchmarkBase):
 
         return flagsstr
 
+    def run(self, benchmark, flags={}) -> dict:
+        return super().run(benchmark, flags)
+    
     def run_in_docker(self, benchmark, flagstr="") -> dict:
         print(f'Running benchmark {benchmark} with flags "{flagstr}"')
 
