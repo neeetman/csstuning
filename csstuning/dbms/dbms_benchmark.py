@@ -276,6 +276,9 @@ class MySQLBenchmark:
 
     def _is_mysql_ready(self):
         try:
+            if self.mysql_container.status == "exited":
+                raise RuntimeError("MySQL container failed to start.")
+            
             with pymysql.connect(
                 host="127.0.0.1", port=3307, user="admin", password="password"
             ):

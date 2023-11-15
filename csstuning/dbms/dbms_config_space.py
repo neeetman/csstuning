@@ -27,6 +27,36 @@ class MySQLConfigSpace(ConfigSpace):
         for name, value in config.items():
             self.set_option_value(name, value)
 
+        if self._validate_constraint() is False:
+            log_file_size = self.config_items["innodb_log_file_size"].current_value
+            log_files_in_group = self.config_items["innodb_log_files_in_group"].current_value
+            thread_concurrency = self.config_items["innodb_thread_concurrency"].current_value
+
+            raise ValueError(
+                f"Invalid configuration detected:\n"
+                f" - Current 'innodb_log_file_size': {log_file_size} (Bytes)\n"
+                f" - Current 'innodb_log_files_in_group': {log_files_in_group}\n"
+                f" - Current 'innodb_thread_concurrency': {thread_concurrency}\n\n"
+                "Constraints violated:\n"
+                "1. 'innodb_log_file_size' * 'innodb_log_files_in_group' should be <= 512GB.\n"
+                "2. 'innodb_thread_concurrency' * 200 * 1024 should be <= 'innodb_log_file_size' * 'innodb_log_files_in_group'.\n\n"
+                "Please adjust your configuration to meet these constraints."
+            )
+
+    def _validate_constraint(self):
+        # innodb_log_file_size * innodb_log_files_in_group <= 512GB
+        # innodb_thread_concurrency * 200 * 1024 <= innodb_log_file_size * innodb_log_files_in_group
+        log_file_size = self.config_items["innodb_log_file_size"].current_value
+        log_files_in_group = self.config_items["innodb_log_files_in_group"].current_value
+        thread_concurrency = self.config_items["innodb_thread_concurrency"].current_value
+
+        MAX_LOG_SIZE_BYTES = 512 * 1024 * 1024 * 1024  # 512GB in bytes
+
+        return (
+            log_file_size * log_files_in_group <= MAX_LOG_SIZE_BYTES
+            and thread_concurrency * 200 * 1024 <= log_file_size * log_files_in_group
+        )
+
     def generate_config_file(self, output_file_path):
         config_lines = ["[mysqld]"]
         for key, value in self.get_current_config().items():
