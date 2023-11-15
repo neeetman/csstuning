@@ -1,0 +1,740 @@
+{
+    "aa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "basic-aa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "block-freq": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "branch-prob": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "demanded-bits": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "domtree": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "globals-aa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "inferattrs": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "lazy-block-freq": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "lazy-branch-prob": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "lazy-value-info": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "loops": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "memdep": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "memoryssa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "opt-remark-emitter": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "phi-values": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "postdomtree": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "scalar-evolution": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "scoped-noalias-aa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "tbaa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "analysis_passes",
+        "type": "enum"
+    },
+    "adce": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "aggressive-instcombine": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "alignment-from-assumptions": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "always-inline": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "bdce": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "called-value-propagation": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "callsite-splitting": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "constmerge": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "correlated-propagation": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "deadargelim": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "div-rem-pairs": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "dse": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "early-cse": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "early-cse-memssa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "elim-avail-extern": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "float2int": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "function-attrs": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "globaldce": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "globalopt": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "gvn": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "indvars": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "inject-tli-mappings": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "inline": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "instcombine": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "instsimplify": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "ipsccp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "jump-threading": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "lcssa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "lcssa-verification": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "libcalls-shrinkwrap": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "licm": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-accesses": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-deletion": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-distribute": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-idiom": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-instsimplify": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-load-elim": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-rotate": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-simplify": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-simplifycfg": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-sink": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-unroll": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "loop-vectorize": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "lower-constant-intrinsics": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "lower-expect": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "mem2reg": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "memcpyopt": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "mldst-motion": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "openmp-opt-cgscc": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "prune-eh": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "reassociate": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "rpo-function-attrs": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "sccp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "simple-loop-unswitch": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "simplifycfg": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "slp-vectorizer": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "speculative-execution": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "sroa": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "strip-dead-prototypes": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "tailcallelim": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "transform-warning": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    },
+    "vector-combine": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "transform_passes",
+        "type": "enum"
+    }
+}

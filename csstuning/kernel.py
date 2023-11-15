@@ -3,24 +3,17 @@ import sys
 import subprocess
 from importlib import resources
 from pathlib import Path
-from csstuning.compiler.benchmark import GCCBenchmark, LLVMBenchmark
-
-# pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-# pkg_path = Path(pkg_resources.resource_filename('csstuning', ''))
+from csstuning.compiler.compiler_benchmark import GCCBenchmark, LLVMBenchmark
 
 compiler_benchs = []
 
 compiler_flags = {"gcc": [], "llvm": []}
-
-# TODO:
-# 1. Store all config files in user's home directory
 
 
 def load_compiler_contants():
     global compiler_benchs
     global compiler_flags
 
-    # config_path = pkg_path / "compiler/config"
     config_path = "cssbench.compiler.config"
     with resources.open_text(config_path, "gcc_flags.json") as json_file:
         gcc_flag_dict = json.load(json_file)

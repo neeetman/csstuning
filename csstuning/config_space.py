@@ -9,6 +9,7 @@ class ConfigItem:
         self.min_value = data.get("min")  # Minimum value for integers
         self.max_value = data.get("max")  # Maximum value for integers
         self.default = data.get("default")
+        self.scope = data.get("scope")
 
         self.current_value = self.default
 

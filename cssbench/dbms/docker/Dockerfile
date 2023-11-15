@@ -11,7 +11,7 @@ ARG CONTAINERUSER_UID=1000
 ARG CONTAINERUSER_GID=1000
 RUN groupadd --non-unique --gid ${CONTAINERUSER_GID} containergroup \
     && useradd --non-unique --create-home --no-user-group --comment 'Container User' \
-        --uid ${CONTAINERUSER_UID} --gid ${CONTAINERUSER_GID} containeruser \
+    --uid ${CONTAINERUSER_UID} --gid ${CONTAINERUSER_GID} containeruser \
     && mkdir -p /benchbase/results \
     && chown -R containeruser:containergroup /benchbase
 

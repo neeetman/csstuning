@@ -1,8 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-image_name="dbms-benchmark:0.1"
-cd "$(dirname "${BASH_SOURCE[0]}")"
+image_name="csstuning-dbms:0.1"
 
 echo "Building docker image $image_name"
 
@@ -15,9 +14,11 @@ if docker image inspect "$image_name" >/dev/null 2>&1; then
             echo "Remove running container $container_id"
             docker container rm -f "$container_id"
         fi
-        docker rmi "$image_name"
+        docker rmi -f "$image_name"
     fi
 fi
+
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 build_dir=$(mktemp -d -t docker-build-XXXXXX)
 trap "rm -rf $build_dir" EXIT
@@ -33,6 +34,6 @@ docker build -t $image_name \
     -f "$build_dir/Dockerfile" "$build_dir"
 
 # Pull mysql image
-docker pull mysql:latest
+docker pull mysql:5.7
 
 echo "Done"

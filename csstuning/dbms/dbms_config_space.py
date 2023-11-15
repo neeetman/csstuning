@@ -1,37 +1,39 @@
 import json
-from importlib import resources
+from pathlib import Path
 from csstuning.config_space import ConfigSpace
+from csstuning.config import config_loader
 
 
 class MySQLConfigSpace(ConfigSpace):
-    def __init__(self, config_file=None):
+    def __init__(self):
         config_data = None
 
-        if config_file is not None:
-            # Try to load the user-provided config file
-            try:
-                with open(config_file, "r") as file:
-                    config_data = json.load(file)
-            except Exception as e:
-                raise FileNotFoundError(f"Unable to load the configuration file: {e}")
-        else:
-            # Fallback to the package resource
-            config_package = "cssbench.dbms.config.mysql"
-            resource_path = "mysql_all_197.json"
-            try:
-                config_data = json.loads(resources.read_text(config_package, resource_path))
-            except Exception as e:
-                raise FileNotFoundError(f"Unable to load the internal configuration resource: {e}")
+        env_conf = config_loader.get_config()
+        conf_dir = Path(env_conf.get("database", "dbms_config_dir"))
+
+        config_space_file = conf_dir / "mysql_all_197.json"
+        try:
+            with open(config_space_file, "r") as file:
+                config_data = json.load(file)
+        except Exception as e:
+            raise FileNotFoundError(f"Unable to load the configuration file: {e}")
 
         super().__init__(config_data)
 
-    def generate_config_file(self, output_file_path): 
+    def set_current_config(self, config):
+        if config is None:
+            return
+
+        for name, value in config.items():
+            self.set_option_value(name, value)
+
+    def generate_config_file(self, output_file_path):
         config_lines = ["[mysqld]"]
         for key, value in self.get_current_config().items():
             config_line = f"{key} = {value}"
             config_lines.append(config_line)
-        
+
         config_content = "\n".join(config_lines)
 
-        with open(output_file_path, 'w') as config_file:
+        with open(output_file_path, "w") as config_file:
             config_file.write(config_content)

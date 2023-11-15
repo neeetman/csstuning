@@ -8,21 +8,35 @@ from abc import ABC, abstractmethod
 from docker.errors import ContainerError
 from pathlib import Path
 
+from csstuning.logger import logger
+from csstuning.config import config_loader
+from csstuning.compiler.compiler_config_space import GCCConfigSpace, LLVMConfigSpace
+
 
 class CompilerBenchmarkBase(ABC):
-    def __init__(self, docker_mode=True, docker_image="compiler-benchmark:0.1"):
-        self.docker_mode = docker_mode
-        self.docker_image = docker_image
-        self.flags = []
-        self.benchmarks = []
+    def __init__(self):
+        env_conf = config_loader.get_config()
+
+        self.config_dir = Path(env_conf.get("compiler", "compiler_config_dir"))
+        self.AVALIABLE_WORKLOADS = self._load_available_workloads(
+            self.config_dir / "programs.json"
+        )
+
+        self.docker_image = env_conf.get("compiler", "docker_image")
         self.initialize()
+
+    @staticmethod
+    def _load_available_workloads(file_path):
+        try:
+            with open(file_path, "r") as file:
+                data = json.load(file)
+        except Exception as e:
+            raise FileNotFoundError(f"Unable to load the configuration file: {e}")
+        
+        return data["cbench"] + data["polybench"]
 
     @abstractmethod
     def initialize(self) -> None:
-        # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-        # config_path = pkg_path / "compiler/config"
-        # config_path = Path(pkg_resources.resource_filename('csstuning', 'compiler/config'))
-
         config_path = "cssbench.compiler.config"
         with resources.open_text(config_path, "programs.json") as json_file:
             programs_dict = json.load(json_file)
@@ -39,7 +53,6 @@ class CompilerBenchmarkBase(ABC):
                 remove=True,
             )
 
-    @abstractmethod
     def run(self, benchmark, flags={}) -> dict:
         if benchmark not in self.benchmarks:
             return {"return": 1, "msg": f"Invalid {benchmark}!"}
@@ -72,10 +85,6 @@ class CompilerBenchmarkBase(ABC):
 class GCCBenchmark(CompilerBenchmarkBase):
     def initialize(self) -> None:
         super().initialize()
-        # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
-        # config_path = pkg_path / "compiler/config"
-        # config_path = Path(pkg_resources.resource_filename('csstuning', 'compiler/config'))
-
         config_path = "cssbench.compiler.config"
         with resources.open_text(config_path, "gcc_flags.json") as json_file:
             gcc_flags = json.load(json_file)
@@ -99,9 +108,6 @@ class GCCBenchmark(CompilerBenchmarkBase):
 
         return flagsstr
 
-    def run(self, benchmark, flags={}) -> dict:
-        return super().run(benchmark, flags)
-    
     def run_in_docker(self, benchmark, flagstr="") -> dict:
         print(f'Running benchmark {benchmark} with flags "{flagstr}"')
 
@@ -118,7 +124,9 @@ class GCCBenchmark(CompilerBenchmarkBase):
         return {}
 
     def run_in_local(self, benchmark, flagstr="") -> dict:
-        benchmark_path = resources.path("cssbench.compiler.benchmark.programs", benchmark)
+        benchmark_path = resources.path(
+            "cssbench.compiler.benchmark.programs", benchmark
+        )
 
         config_file = benchmark_path / "config.json"
         with open(config_file, "r") as f:
@@ -160,14 +168,16 @@ class GCCBenchmark(CompilerBenchmarkBase):
         avrg_time = result["execution_time_0"] / repeat_times
         file_size = os.stat("a.out").st_size
 
-        print(f"""
+        print(
+            f"""
         Compilation time: {compilation_time}
         Total execution time: {result['execution_time_0']}
         Number of repeats: {repeat_times}
         Average execution time: {avrg_time}
         Max resident set size: {result['maxrss']}
         File size (bytes): {file_size}
-        """)
+        """
+        )
 
         return {}
 
@@ -201,9 +211,6 @@ class LLVMBenchmark(CompilerBenchmarkBase):
         flagsstr = " ".join(f"-{flag}" for flag in flag_list)
 
         return flagsstr
-
-    def run(self, benchmark, flags={}) -> dict:
-        return super().run(benchmark, flags)
 
     def run_in_docker(self, benchmark, flagstr="") -> dict:
         print(f'Running benchmark {benchmark} with flags "{flagstr}"')
@@ -264,12 +271,12 @@ class LLVMBenchmark(CompilerBenchmarkBase):
 
         print(
             f"""
-        Compilation time: {compilation_time}
-        Total execution time: {result['execution_time_0']}
-        Number of repeats: {repeat_times}
-        Average execution time: {avrg_time}
-        Max resident set size: {result['maxrss']}
-        File size (bytes): {file_size}
+            Compilation time: {compilation_time}
+            Total execution time: {result['execution_time_0']}
+            Number of repeats: {repeat_times}
+            Average execution time: {avrg_time}
+            Max resident set size: {result['maxrss']}
+            File size (bytes): {file_size}
         """
         )
 

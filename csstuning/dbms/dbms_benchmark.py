@@ -9,7 +9,7 @@ from pathlib import Path
 from importlib import resources
 
 from csstuning.logger import logger
-from csstuning.config_loader import get_config
+from csstuning.config import config_loader
 from csstuning.dbms.dbms_config_space import MySQLConfigSpace
 
 
@@ -31,7 +31,7 @@ class MySQLBenchmark:
             )
             raise ValueError(f"Workload '{workload}' is not supported.")
 
-        env_config = get_config()
+        env_config = config_loader.get_config()
 
         # Update to use configuration values from config_loader
         self.mysql_image = env_config.get("database", "mysql_image")
@@ -39,9 +39,7 @@ class MySQLBenchmark:
         self.vcpus = env_config.getfloat("database", "mysql_vcpus")
         self.mem = env_config.getfloat("database", "mysql_mem")
         self.mysql_config_file = Path(env_config.get("database", "mysql_config_file"))
-        self.mysql_data_dir = Path(
-            env_config.get("database", "mysql_data_dir")
-        ).expanduser()
+        self.mysql_data_dir = Path(env_config.get("database", "mysql_data_dir"))
 
         self.benchbase_image = env_config.get("database", "benchbase_image")
         self.benchbase_container_name = env_config.get(
@@ -49,40 +47,42 @@ class MySQLBenchmark:
         )
         self.benchbase_config_dir = Path(
             env_config.get("database", "benchbase_config_dir")
-        ).expanduser()
+        )
         self.benchbase_results_dir = Path(
             env_config.get("database", "benchbase_results_dir")
-        ).expanduser()
+        )
 
         self.workload = workload
-        self.config_space = MySQLConfigSpace(knobs_file)
+        self.config_space = MySQLConfigSpace()
         self.docker_client = docker.from_env()
 
-        self.initialize_benchmark_data_dir()
+        # self.initialize_benchmark_data_dir()
 
+    # Deprecated. Directories are now created in setup.py
     def initialize_benchmark_data_dir(self):
-        self.mysql_data_dir.mkdir(parents=True, exist_ok=True)
-        self.benchbase_config_dir.mkdir(parents=True, exist_ok=True)
-        self.benchbase_results_dir.mkdir(parents=True, exist_ok=True)
+        pass
+        # self.mysql_data_dir.mkdir(parents=True, exist_ok=True)
+        # self.benchbase_config_dir.mkdir(parents=True, exist_ok=True)
+        # self.benchbase_results_dir.mkdir(parents=True, exist_ok=True)
 
-        if not any(self.mysql_data_dir.iterdir()):
-            logger.info("Initializing MySQL data directory...")
-            self.start_mysql_and_wait(custom_config=False, limit_resources=False)
+        # if not any(self.mysql_data_dir.iterdir()):
+        #     logger.info("Initializing MySQL data directory...")
+        #     self.start_mysql_and_wait(custom_config=False, limit_resources=False)
 
-        # Check if the directory is empty and requires initialization
-        if not any(self.benchbase_config_dir.iterdir()):
-            with resources.path(
-                "cssbench.dbms.config", "benchbase"
-            ) as pkg_benchbase_path:
-                for item in pkg_benchbase_path.iterdir():
-                    if item.is_dir():
-                        shutil.copytree(item, self.benchbase_config_dir / item.name)
-                    else:
-                        shutil.copy(item, self.benchbase_config_dir / item.name)
+        # # Check if the directory is empty and requires initialization
+        # if not any(self.benchbase_config_dir.iterdir()):
+        #     with resources.path(
+        #         "cssbench.dbms.config", "benchbase"
+        #     ) as pkg_benchbase_path:
+        #         for item in pkg_benchbase_path.iterdir():
+        #             if item.is_dir():
+        #                 shutil.copytree(item, self.benchbase_config_dir / item.name)
+        #             else:
+        #                 shutil.copy(item, self.benchbase_config_dir / item.name)
 
-            logger.info(
-                f"Initialized benchbase data directory at {self.benchbase_config_dir}"
-            )
+        #     logger.info(
+        #         f"Initialized benchbase data directory at {self.benchbase_config_dir}"
+        #     )
 
     def _remove_existing_container(self, container_name):
         try:
@@ -200,12 +200,15 @@ class MySQLBenchmark:
         return self._wait_for_mysql_ready(timeout)
 
     def create_database(self):
-        with resources.path("cssbench.dbms.config.mysql", "load_data.cnf") as conf_file:
-            try:
-                shutil.copyfile(conf_file, self.mysql_config_file)
-            except IOError as e:
-                logger.error(f"Failed to copy MySQL config file: {e}")
-                raise
+        env_conf = config_loader.get_config()
+        conf_dir = Path(env_conf.get("database", "dbms_config_dir"))
+        load_conf_file = conf_dir / "load_data.cnf"
+
+        try:
+            shutil.copyfile(load_conf_file, self.mysql_config_file)
+        except IOError as e:
+            logger.error(f"Failed to copy MySQL config file for loading databse: {e}")
+            raise
 
         if not self.start_mysql_and_wait(limit_resources=False, timeout=600):
             raise RuntimeError("Failed to start MySQL container.")
@@ -251,7 +254,9 @@ class MySQLBenchmark:
         self._gracefully_stop_mysql_container(self.mysql_container_name)
 
     def _wait_for_mysql_ready(self, timeout=None):
-        default_timeout = get_config().getint("database", "mysql_start_timeout")
+        default_timeout = config_loader.get_config().getint(
+            "database", "mysql_start_timeout"
+        )
         timeout = timeout or default_timeout
 
         logger.info(f"Waiting for MySQL to start (timeout: {timeout} seconds)...")
@@ -332,6 +337,7 @@ class MySQLBenchmark:
 
     def run(self, knobs: dict) -> dict:
         self.config_space.set_current_config(knobs)
+        self.config_space.generate_config_file(self.mysql_config_file)
 
         try:
             self.start_mysql_and_wait()

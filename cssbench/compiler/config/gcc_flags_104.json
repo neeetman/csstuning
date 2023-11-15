@@ -1,0 +1,932 @@
+{
+    "branch-count-reg": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "combine-stack-adjustments": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "compare-elim": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "cprop-registers": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "defer-pop": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "forward-propagate": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "guess-branch-probability": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "if-conversion": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "if-conversion2": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "inline-functions-called-once": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "ipa-profile": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "ipa-pure-const": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "ipa-reference": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "ipa-reference-addressable": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "move-loop-invariants": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "omit-frame-pointer": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "reorder-blocks": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "shrink-wrap": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "split-wide-types": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "ssa-phiopt": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-bit-ccp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-builtin-call-dce": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-ccp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-ch": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-coalesce-vars": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-copy-prop": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-dce": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-dominator-opts": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-dse": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-fre": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-pta": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-sink": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-slsr": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-sra": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "tree-ter": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "auto-inc-dec": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "dce": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "dse": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "merge-constants": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O1",
+        "type": "enum"
+    },
+    "caller-saves": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "code-hoisting": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "crossjumping": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "cse-follow-jumps": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "devirtualize": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "devirtualize-speculatively": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "expensive-optimizations": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "gcse": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "hoist-adjacent-loads": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "indirect-inlining": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "inline-small-functions": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-bit-cp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-cp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-icf": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-icf-functions": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-icf-variables": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-ra": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-sra": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "ipa-vrp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "isolate-erroneous-paths-dereference": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "lra-remat": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "optimize-sibling-calls": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "optimize-strlen": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "partial-inlining": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "peephole2": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "reorder-blocks-and-partition": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "reorder-functions": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "rerun-cse-after-loop": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "schedule-insns2": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "store-merging": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "strict-aliasing": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "thread-jumps": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "tree-pre": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "tree-switch-conversion": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "tree-tail-merge": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "tree-vrp": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O2",
+        "type": "enum"
+    },
+    "gcse-after-reload": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "inline-functions": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "ipa-cp-clone": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "loop-interchange": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "loop-unroll-and-jam": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "peel-loops": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "predictive-commoning": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "split-loops": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "split-paths": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "tree-loop-distribute-patterns": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "tree-loop-distribution": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "tree-loop-vectorize": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "tree-partial-pre": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "tree-slp-vectorize": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "unswitch-loops": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "version-loops-for-strides": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "O3",
+        "type": "enum"
+    },
+    "associative-math": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "Ofast",
+        "type": "enum"
+    },
+    "cx-limited-range ": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "Ofast",
+        "type": "enum"
+    },
+    "no-math-errno": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "Ofast",
+        "type": "enum"
+    },
+    "reciprocal-math": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "Ofast",
+        "type": "enum"
+    },
+    "no-signed-zeros": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "Ofast",
+        "type": "enum"
+    },
+    "no-ftrapping-math": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "Ofast",
+        "type": "enum"
+    },
+    "unsafe-math-optimizations": {
+        "default": "OFF",
+        "enum_values": [
+            "ON",
+            "OFF"
+        ],
+        "scope": "Ofast",
+        "type": "enum"
+    },
+    "align-functions": {
+        "default": "0",
+        "max": 1399,
+        "min": 0,
+        "scope": "Param",
+        "type": "integer"
+    },
+    "align-jumps": {
+        "default": "0",
+        "max": 1399,
+        "min": 0,
+        "scope": "Param",
+        "type": "integer"
+    },
+    "align-labels": {
+        "default": "0",
+        "max": 1399,
+        "min": 0,
+        "scope": "Param",
+        "type": "integer"
+    },
+    "align-loops": {
+        "default": "0",
+        "max": 1399,
+        "min": 0,
+        "scope": "Param",
+        "type": "integer"
+    },
+    "reorder-blocks-algorithm": {
+        "default": "simple",
+        "enum_values": [
+            "simple",
+            "stc"
+        ],
+        "scope": "Param",
+        "type": "enum"
+    },
+    "vect-cost-model": {
+        "default": "cheap",
+        "enum_values": [
+            "unlimited",
+            "dynamic",
+            "cheap",
+            "very-cheap"
+        ],
+        "scope": "Param",
+        "type": "enum"
+    }
+}

@@ -247,7 +247,7 @@ int LoadAndAddEventsFromFile(const char* filename) {
 
         if ((retval = PAPI_add_event(papiEventSet, papiEventlist[i])) != PAPI_OK) {
             // HandleError(__FILE__, __LINE__, "PAPI_add_event", retval);
-            fprintf(stderr, "Error adding PAPI event %s\n retval: %d", line, retval);
+            fprintf(stderr, "Error adding PAPI event %s, retval: %d\n", line, retval);
             continue;
         }   
         
