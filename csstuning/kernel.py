@@ -1,8 +1,10 @@
+import argparse
 import json
 import sys
 import subprocess
 from importlib import resources
 from pathlib import Path
+from csstuning.dbms.dbms_benchmark import MySQLBenchmark
 from csstuning.compiler.compiler_benchmark import GCCBenchmark, LLVMBenchmark
 
 compiler_benchs = []
@@ -199,6 +201,20 @@ def run_script(script_subpath):
             subprocess.run(str(script_path), shell=True)
     except FileNotFoundError:
         print("Package resource not found.")
+
+def load_dbms_database():
+    # Get workload type from command line 
+    parser = argparse.ArgumentParser(description='Create the DMBS database and load data.')
+    parser.add_argument('workload', type=str, help='The type of workload')
+
+    args = parser.parse_args()
+
+    try:
+        benchmark = MySQLBenchmark(workload=args.workload)
+        benchmark.create_database()
+    except Exception as e:
+        print(f"Failed to create database: {e}")
+        return
 
 
 def print_usage(type):

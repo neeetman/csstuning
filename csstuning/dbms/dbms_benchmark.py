@@ -379,4 +379,5 @@ class MySQLBenchmark:
         return result
 
     def __del__(self):
-        self.docker_client.close()
+        if hasattr(self, "docker_client"):
+            self.docker_client.close()

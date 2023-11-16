@@ -56,7 +56,7 @@ pip install .
 
 4. **Optional: Load Database for DBMS benchmark:**
 ```
-csstuing_dbms_load -h
+csstuing_dbms_init -h
 ```
 
 

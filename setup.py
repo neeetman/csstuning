@@ -113,7 +113,8 @@ setup(
     include_package_data=True,
     entry_points={
         "console_scripts": [
-            "csstuning=csstuning.kernel:cli"
+            "csstuning=csstuning.kernel:cli",
+            "csstuning_dbms_init=csstuning.kernel:load_dbms_database"
         ]
     },
     install_requires=["docker", "pymysql"],

@@ -51,7 +51,8 @@ class CompilerBenchmarkBase:
             logger.error(f"Error removing container {container_name}: {e}")
 
     def __del__(self):
-        self.docker_client.close()
+        if hasattr(self, "docker_client"):
+            self.docker_client.close()
 
 
 class GCCBenchmark(CompilerBenchmarkBase):
