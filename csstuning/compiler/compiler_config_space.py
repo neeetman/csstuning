@@ -28,21 +28,35 @@ class GCCConfigSpace(ConfigSpace):
                 return json.load(file)
         except Exception as e:
             raise FileNotFoundError(f"Unable to load the configuration file: {e}")
+    
+    def set_all_to_on(self):
+        for item in self.config_items.values():
+            if item.type == "enum" and item.scope != "Param":
+                item.current_value = "ON"
 
-    def generate_flags_str(self):
-        flags_str = ""
+    def generate_flags_str(self) -> str:
+        flag_parts = []
+
         for name, entry in self.config_items.items():
             if entry.type == "enum":
-                if entry.current_value == "ON":
-                    flags_str += f" -f{name}"
+                if entry.scope != "Param":
+                    flag_parts.append(
+                        f"-f{name}" if entry.current_value == "ON" else f"-fno-{name}"
+                    )
                 else:
-                    flags_str += f" -fno-{name}"
-            elif entry.type == "integer" and entry.name in self.align_flags:
-                value = self.integer_to_quaternion(entry.current_value)
-                if value.strip() != "":
-                    flags_str += f" -f{name}={value}"
-                else:
-                    flags_str += f" -fno-{name}"
+                    flag_parts.append(f"-f{name}={entry.current_value}")
+
+            elif entry.type == "integer" and entry.scope == "Align":
+                quaternion_value = self.integer_to_quaternion(
+                    entry.current_value
+                ).strip()
+                flag_parts.append(
+                    f"-f{name}={quaternion_value}"
+                    if quaternion_value
+                    else f"-fno-{name}"
+                )
+
+        return " ".join(flag_parts)
 
     def integer_to_quaternion(self, value):
         return self.quaternions[value]
@@ -69,12 +83,16 @@ class GCCConfigSpace(ConfigSpace):
                 if m1 > 0:
                     parts.append(str(m1))
             return ":".join(parts)
-    
+
         return [
             format_quaternion(n, m, n1, m1)
-            for n in n_values for m in m_values if m < n
-            for n1 in n_values if n1 < n
-            for m1 in m_values if m1 < n1
+            for n in n_values
+            for m in m_values
+            if m < n
+            for n1 in n_values
+            if n1 < n
+            for m1 in m_values
+            if m1 < n1
         ]
 
 
@@ -93,6 +111,39 @@ class LLVMConfigSpace(ConfigSpace):
                 return json.load(file)
         except Exception as e:
             raise FileNotFoundError(f"Unable to load the configuration file: {e}")
-        
-    def generate_flags_str(self):
-        pass
+
+    def set_all_to_on(self):
+        for item in self.config_items.values():
+            if item.type == "enum" and item.scope != "Param":
+                item.current_value = "ON"
+    
+    def generate_flags_str(self, order_list=None) -> str:
+        """
+        Generates a flags string for LLVM optimization passes.
+        Note: The sequence of passes is critical in LLVM.
+        Currently, analysis passes are prioritized before transformation passes.
+        TODO:
+        - Implement functionality to allow custom ordering of passes by the user.
+        """
+        flags = []
+
+        if order_list is None:
+            analysis_flags = [
+                f"-{name}"
+                for name, entry in self.config_items.items()
+                if entry.current_value == "ON" and entry.scope == "Analysis"
+            ]
+            transform_flags = [
+                f"-{name}"
+                for name, entry in self.config_items.items()
+                if entry.current_value == "ON" and entry.scope == "Transform"
+            ]
+            flags = analysis_flags + transform_flags
+        else:
+            flags = [
+                f"-{name}"
+                for name in order_list
+                if self.config_items[name].current_value == "ON"
+            ]
+
+        return " ".join(flags)

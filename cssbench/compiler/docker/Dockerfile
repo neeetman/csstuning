@@ -1,7 +1,9 @@
 FROM ubuntu:focal as builder
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates apt-utils time bc jq wget gnupg cmake make gcc g++ python3\
+    ca-certificates apt-utils time bc jq wget gnupg cmake make build-essential python3\
     && echo "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-15 main" >> /etc/apt/sources.list \
     && echo "deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-15 main" >> /etc/apt/sources.list \
     && wget --no-check-certificate -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
@@ -27,4 +29,4 @@ WORKDIR /benchmark
 
 RUN /bin/bash /benchmark/init.sh
 
-ENTRYPOINT ["python3 /benchmark/run.py"]
+ENTRYPOINT ["python3", "/benchmark/run.py"]

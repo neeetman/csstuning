@@ -1,165 +1,183 @@
+#!/usr/bin/env python3
+"""
+A script to run compiler benchmarks. Usage:
+    
+        python3 run.py [-v|--verbose] <compiler> <benchmark> <flags>
+
+execution_time: The total time taken to execute the benchmarked code, measured in seconds.
+avrg_exec_time: Average execution time, measured in seconds.
+compilation_time: The time taken to compile the code, measured in seconds.
+file_size: The size of the compiled executable file, measured in bytes.
+maxrss: Stands for "maximum resident set size", measured in kilobytes (KB).
+
+PAPI_TOT_CYC: The total number of CPU cycles consumed during the execution.
+PAPI_TOT_INS: The total number of instructions the CPU executed.
+PAPI_BR_MSP: The number of times the CPU incorrectly predicted the direction of a branch.
+PAPI_BR_PRC: The number of times the CPU correctly predicted the direction of a branch.
+PAPI_BR_CN: The number of conditional branch instructions.
+PAPI_MEM_WCY: The number of cycles spent waiting for memory accesses.
+"""
+
 import argparse
 import os
 import json
 import subprocess
 import time
+from pathlib import Path
+from contextlib import contextmanager
 
 
-def shell(cmd):
+def execute_command(cmd):
+    """
+    Execute a shell command and return its output.
+    """
     return subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
 
 
-def get_benchmarks_list():
-    # The directory of this script.
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    benchmark_dir = os.path.join(dir_path, "programs")
-
-    # Get all subdirectories in the ./programs directory.
-    benchmarks = [
-        name
-        for name in os.listdir(benchmark_dir)
-        if os.path.isdir(os.path.join(benchmark_dir, name))
-    ]
-    benchmarks.sort()
-    return benchmarks
+def list_benchmarks():
+    """
+    List all subdirectories in the ./programs directory, which are the benchmarks.
+    """
+    script_dir = Path(__file__).resolve().parent
+    benchmark_dir = script_dir / "programs"
+    return sorted(dir.name for dir in benchmark_dir.iterdir() if dir.is_dir())
 
 
-def get_args():
-    benchmarks = ["all"] + get_benchmarks_list()
-
+def parse_arguments():
+    """
+    Parse command line arguments for the script.
+    """
     parser = argparse.ArgumentParser(
-        description="Run the compiler benchmark in a docker container."
+        description="Run compiler benchmarks in a docker container."
     )
-    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose")
-    parser.add_argument("compiler", choices=["LLVM", "GCC"], help="Compiler to use.")
-    parser.add_argument("benchmark", choices=benchmarks, help="Name of the benchmark.")
-    parser.add_argument("flags", help="Flags to pass to the compiler.")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Enable verbose output"
+    )
+    parser.add_argument("compiler", choices=["LLVM", "GCC"], help="Compiler to use")
+    parser.add_argument(
+        "benchmark", choices=["all"] + list_benchmarks(), help="Benchmark name"
+    )
+    parser.add_argument("--flags", default=[], help="Compiler flags (optional)")
     return parser.parse_args()
 
 
-def run_benchmark(benchmark, compiler, flags, verbose=False) -> dict:
+def compile_and_run_benchmark(benchmark, compiler, flags, verbose=False):
+    """
+    Compile and run the specified benchmark, and gather performance data.
+    """
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
     print(f"Running {benchmark} with {compiler} and flags {flags}")
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    # The directory of this script.
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    benchmark_dir = os.path.join(dir_path, "programs", benchmark)
 
-    # Get compiler vars from config.json
-    with open(os.path.join(benchmark_dir, "config.json")) as f:
-        config = json.load(f)
-        if "build_compiler_vars" in config:
-            build_compiler_vars = config["build_compiler_vars"]
-        else:
-            build_compiler_vars = {}
-        build_compiler_vars = " ".join(
+    script_dir = Path(__file__).resolve().parent
+    benchmark_dir = script_dir / "programs" / benchmark
+
+    try:
+        with open(benchmark_dir / "config.json", "r") as f:
+            config = json.load(f)
+
+        build_compiler_vars = config.get("build_compiler_vars", {})
+        compiler_vars_str = " ".join(
             f"-D{k}={v}" for k, v in build_compiler_vars.items()
         )
 
-    if compiler == "GCC":
-        optflags = "-O1 " + flags
-    else:
-        optflags = flags
+        optflags = "-O1 " + flags if compiler == "GCC" else flags
+        repeat_times = config["repeat_times"]
+        command = config["command"]
 
-    repeat_times = config["repeat_times"]
-    command = config["command"]
+        with change_directory(benchmark_dir):
+            subprocess.run(["make", "clean"], stdout=subprocess.DEVNULL, check=True)
 
-    old_dir = os.getcwd()
-    os.chdir(benchmark_dir)
-    print(
-        f'make clean && make COMPILER_TYPE={compiler} MACROS="{build_compiler_vars}" OPTFLAGS="{optflags}"'
-    )
-    subprocess.run(["make", "clean"], stdout=subprocess.DEVNULL)
-    try:
-        start_time = time.time()
-        if verbose:
+            start_time = time.time()
             subprocess.run(
                 [
                     "make",
                     f"COMPILER_TYPE={compiler}",
-                    f"MACROS={build_compiler_vars}",
+                    f"MACROS={compiler_vars_str}",
                     f"OPTFLAGS={optflags}",
                 ],
+                stdout=None if verbose else subprocess.DEVNULL,
+                stderr=None if verbose else subprocess.DEVNULL,
+                check=True,
             )
-        else:
-            subprocess.run(
-                [
-                    "make",
-                    f"COMPILER_TYPE={compiler}",
-                    f"MACROS={build_compiler_vars}",
-                    f"OPTFLAGS={optflags}",
-                ],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-        compilation_time = time.time() - start_time
-        print(f"Compilation time: {compilation_time}")
-    except subprocess.CalledProcessError:
-        print("Compilation failed")
-        os.chdir(old_dir)
-        return {"return": 1, "msg": "Compilation failed"}
+            compilation_time = time.time() - start_time
 
-    os.environ["BENCH_REPEAT_MAIN"] = str(repeat_times)
-    try:
-        print(f"Running {command}")
-        if verbose:
-            subprocess.run([command], shell=True)
-        else:
+            os.environ["BENCH_REPEAT_MAIN"] = str(repeat_times)
             subprocess.run(
                 [command],
                 shell=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                stdout=None if verbose else subprocess.DEVNULL,
+                stderr=None if verbose else subprocess.DEVNULL,
+                check=True,
             )
-    except subprocess.CalledProcessError:
-        print("Execution failed")
-        os.chdir(old_dir)
-        return {"return": 1, "msg": "Execution failed"}
 
-    result = {"repeat_times": repeat_times}
-    with open("tmp_result.json") as f:
-        resfile = json.load(f)
-        total_time = float(resfile["execution_time"])
-        avrg_time = total_time / repeat_times
+            with open("tmp_result.json") as f:
+                result = json.load(f)
 
-        result["compilation_time"] = compilation_time
-        result["file_size"] = os.path.getsize(os.path.join(benchmark_dir, "a.out"))
-        result["total_run_time"] = total_time
-        result["avrg_run_time"] = avrg_time
+            result["compilation_time"] = compilation_time
+            result["file_size"] = os.path.getsize(os.path.join(benchmark_dir, "a.out"))
+            result["avrg_exec_time"] = result["execution_time"] / repeat_times
 
-        for k, v in resfile.items():
-            if k.startswith("PAPI"):
-                result[k] = v
+            print(result)
 
-    # maxrss = result.get('maxrss')
-    os.chdir(old_dir)
-    return {"return": 0, "result": result, "msg": "Success"}
+            return result
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
 
-def print_result(result):
-    if result["return"] != 0:
-        print(f'Error: {result["msg"]}')
-    else:
-        print(f'Success: {result["msg"]}')
-        print(result["result"])
-        print()
+@contextmanager
+def change_directory(path):
+    original_path = Path.cwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(original_path)
+
+
+def get_perf_event_paranoid():
+    with open("/proc/sys/kernel/perf_event_paranoid", "r") as f:
+        return int(f.read().strip())
+
+
+def set_perf_event_paranoid(value):
+    with open("/proc/sys/kernel/perf_event_paranoid", "w") as f:
+        f.write(str(value))
 
 
 def main():
-    args = get_args()
+    args = parse_arguments()
 
-    benchmarks = get_benchmarks_list()
-    if args.benchmark == "all":
-        for benchmark in benchmarks:
-            result = run_benchmark(benchmark, args.compiler, args.flags, args.verbose)
-            print_result(result)
+    benchmarks = list_benchmarks()
 
-    elif args.benchmark in benchmarks:
-        result = run_benchmark(args.benchmark, args.compiler, args.flags, args.verbose)
-        print_result(result)
+    result_dict = {}
+    original_paranoid = get_perf_event_paranoid()
+    try:
+        set_perf_event_paranoid(0)
+        if args.benchmark == "all":
+            for benchmark in benchmarks:
+                result = compile_and_run_benchmark(
+                    benchmark, args.compiler, args.flags, args.verbose
+                )
+                result_dict[benchmark] = result
+        elif args.benchmark in benchmarks:
+            result = compile_and_run_benchmark(
+                args.benchmark, args.compiler, args.flags, args.verbose
+            )
+            result_dict[args.benchmark] = result
+        else:
+            print(f"Error: Invalid benchmark {args.benchmark}")
 
-    else:
-        print(f"Error: Invalid benchmark {args.benchmark}")
+    finally:
+        set_perf_event_paranoid(original_paranoid)
+
+    results_dir = Path(__file__).resolve().parent / "results"
+    results_dir.mkdir(exist_ok=True)
+    results_file = results_dir / f"{args.compiler.lower()}_results.json"
+    with open(results_file, "w") as f:
+        json.dump(result_dict, f, indent=4)
 
 
 if __name__ == "__main__":

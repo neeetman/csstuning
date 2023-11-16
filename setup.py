@@ -110,10 +110,7 @@ setup(
         "Operating System :: Linux",
     ],
     python_requires=">=3.8",
-    include_package_data=True,  # This tells setuptools to use MANIFEST.in
-    package_data={
-        "csstuning": ["cssbenchmarks/*"]
-    },  # include data files in csstuning package
+    include_package_data=True,
     entry_points={
         "console_scripts": [
             "csstuning=csstuning.kernel:cli",

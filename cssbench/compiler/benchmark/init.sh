@@ -1,5 +1,9 @@
 #!/bin/bash
+set -euo pipefail
 
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+mkdir -p results
 mkdir -p ${PAPI_DIR}
 mkdir -p ${POLYBENCH_DIR}
 
@@ -9,7 +13,6 @@ tar -xzf packages/polybench.tar.gz -C ${POLYBENCH_DIR}
 pushd ${PAPI_DIR}/src/src
 ./configure --prefix=${PAPI_DIR}
 make && make install
-echo 0 | tee /proc/sys/kernel/perf_event_paranoid
 popd
 
 pushd ${POLYBENCH_DIR}/src

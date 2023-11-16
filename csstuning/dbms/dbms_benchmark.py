@@ -24,7 +24,7 @@ class MySQLBenchmark:
         "tatp",
     ]
 
-    def __init__(self, workload, knobs_file=None):
+    def __init__(self, workload):
         if workload not in self.AVAILABLE_WORKLOADS:
             logger.error(
                 f"Workload '{workload}' is not supported. Supported workloads: {self.AVAILABLE_WORKLOADS}"
@@ -34,6 +34,7 @@ class MySQLBenchmark:
         env_config = config_loader.get_config()
 
         # Update to use configuration values from config_loader
+        self.debug_mode = env_config.getboolean("general", "debug_mode")
         self.mysql_image = env_config.get("database", "mysql_image")
         self.mysql_container_name = env_config.get("database", "mysql_container_name")
         self.vcpus = env_config.getfloat("database", "mysql_vcpus")
@@ -242,8 +243,11 @@ class MySQLBenchmark:
                 remove=True,
             )
 
-            for line in container.logs(stream=True, follow=True):
-                logger.info(line.strip().decode("utf-8"))
+            if self.debug_mode:
+                for line in container.logs(stream=True, follow=True):
+                    logger.info(line.strip().decode("utf-8"))
+            else:
+                container.wait()
 
         except docker.errors.DockerException as e:
             logger.error(f"Error running BenchBase container: {e}")
@@ -278,7 +282,7 @@ class MySQLBenchmark:
         try:
             if self.mysql_container.status == "exited":
                 raise RuntimeError("MySQL container failed to start.")
-            
+
             with pymysql.connect(
                 host="127.0.0.1", port=3307, user="admin", password="password"
             ):
@@ -288,6 +292,7 @@ class MySQLBenchmark:
             return False
 
     def execute_benchmark(self):
+        self._remove_existing_container(self.benchbase_container_name)
         # Clean up the results directory
         for item in self.benchbase_results_dir.iterdir():
             if item.is_file():
@@ -325,8 +330,11 @@ class MySQLBenchmark:
                 detach=True,
             )
 
-            for line in container.logs(stream=True, follow=True):
-                logger.info(line.strip().decode("utf-8"))
+            if self.debug_mode:
+                for line in container.logs(stream=True, follow=True):
+                    logger.info(line.strip().decode("utf-8"))
+            else:
+                container.wait()
 
         except docker.errors.DockerException as e:
             logger.error(f"Error running BenchBase container: {e}")
@@ -369,3 +377,6 @@ class MySQLBenchmark:
             result["throughput"] = summary["Throughput (requests/second)"]
 
         return result
+
+    def __del__(self):
+        self.docker_client.close()

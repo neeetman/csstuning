@@ -836,7 +836,7 @@
         "scope": "Ofast",
         "type": "enum"
     },
-    "no-math-errno": {
+    "math-errno": {
         "default": "OFF",
         "enum_values": [
             "ON",
@@ -854,7 +854,7 @@
         "scope": "Ofast",
         "type": "enum"
     },
-    "no-signed-zeros": {
+    "signed-zeros": {
         "default": "OFF",
         "enum_values": [
             "ON",
@@ -863,7 +863,7 @@
         "scope": "Ofast",
         "type": "enum"
     },
-    "no-ftrapping-math": {
+    "trapping-math": {
         "default": "OFF",
         "enum_values": [
             "ON",
@@ -885,28 +885,28 @@
         "default": "0",
         "max": 1399,
         "min": 0,
-        "scope": "Param",
+        "scope": "Align",
         "type": "integer"
     },
     "align-jumps": {
         "default": "0",
         "max": 1399,
         "min": 0,
-        "scope": "Param",
+        "scope": "Align",
         "type": "integer"
     },
     "align-labels": {
         "default": "0",
         "max": 1399,
         "min": 0,
-        "scope": "Param",
+        "scope": "Align",
         "type": "integer"
     },
     "align-loops": {
         "default": "0",
         "max": 1399,
         "min": 0,
-        "scope": "Param",
+        "scope": "Align",
         "type": "integer"
     },
     "reorder-blocks-algorithm": {
@@ -923,8 +923,7 @@
         "enum_values": [
             "unlimited",
             "dynamic",
-            "cheap",
-            "very-cheap"
+            "cheap"
         ],
         "scope": "Param",
         "type": "enum"

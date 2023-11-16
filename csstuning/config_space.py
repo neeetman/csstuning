@@ -1,4 +1,4 @@
-from importlib import resources
+import random
 
 
 class ConfigItem:
@@ -8,8 +8,12 @@ class ConfigItem:
         self.enum_values = data.get("enum_values")
         self.min_value = data.get("min")  # Minimum value for integers
         self.max_value = data.get("max")  # Maximum value for integers
-        self.default = data.get("default")
         self.scope = data.get("scope")
+
+        if self.type == "integer":
+            self.default = int(data.get("default", self.min_value))
+        else:
+            self.default = data.get("default")
 
         self.current_value = self.default
 
@@ -28,6 +32,14 @@ class ConfigItem:
             raise ValueError(f"{self.name} must be one of {self.enum_values}.")
 
         self.current_value = value
+
+    def set_random_value(self):
+        if self.type == "integer":
+            self.current_value = random.randint(self.min_value, self.max_value)
+        elif self.type == "enum":
+            self.current_value = random.choice(self.enum_values)
+        else:
+            raise TypeError(f"Random value is not defined for type '{self.type}'.")
 
     def get_default_value(self):
         return self.default
@@ -68,12 +80,16 @@ class ConfigSpace:
             name: item.get_current_value() for name, item in self.config_items.items()
         }
 
-    def set_current_config(self, config):
+    def set_current_config(self, config: dict):
         if config is None:
             return
 
         for name, value in config.items():
             self.set_option_value(name, value)
+
+    def set_random_config(self):
+        for item in self.config_items.values():
+            item.set_random_value()
 
     def reset_all_to_defaults(self):
         for item in self.config_items.values():

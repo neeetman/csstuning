@@ -4,7 +4,6 @@ import os
 import subprocess
 import time
 from importlib import resources
-from abc import ABC, abstractmethod
 from docker.errors import ContainerError
 from pathlib import Path
 
@@ -13,8 +12,8 @@ from csstuning.config import config_loader
 from csstuning.compiler.compiler_config_space import GCCConfigSpace, LLVMConfigSpace
 
 
-class CompilerBenchmarkBase(ABC):
-    def __init__(self):
+class CompilerBenchmarkBase:
+    def __init__(self, workload):
         env_conf = config_loader.get_config()
 
         self.config_dir = Path(env_conf.get("compiler", "compiler_config_dir"))
@@ -22,8 +21,14 @@ class CompilerBenchmarkBase(ABC):
             self.config_dir / "programs.json"
         )
 
-        self.docker_image = env_conf.get("compiler", "docker_image")
-        self.initialize()
+        self.docker_image = env_conf.get("compiler", "compiler_image")
+        self.container_name = env_conf.get("compiler", "container_name")
+        self.results_dir = Path(env_conf.get("compiler", "compiler_results_dir"))
+
+        self.debug_mode = env_conf.getboolean("general", "debug_mode")
+
+        self.workload = workload
+        self.docker_client = docker.from_env()
 
     @staticmethod
     def _load_available_workloads(file_path):
@@ -32,98 +37,106 @@ class CompilerBenchmarkBase(ABC):
                 data = json.load(file)
         except Exception as e:
             raise FileNotFoundError(f"Unable to load the configuration file: {e}")
-        
+
         return data["cbench"] + data["polybench"]
 
-    @abstractmethod
-    def initialize(self) -> None:
-        config_path = "cssbench.compiler.config"
-        with resources.open_text(config_path, "programs.json") as json_file:
-            programs_dict = json.load(json_file)
-            self.benchmarks = programs_dict["cbench"] + programs_dict["polybench"]
-
-        if self.docker_mode:
-            self.client = docker.from_env()
-            self.container = self.client.containers.run(
-                image=self.docker_image,
-                command="/bin/sleep infinity",
-                # command=f"/bin/bash -c 'while true; do sleep 86400; done'",
-                privileged=True,
-                detach=True,
-                remove=True,
-            )
-
-    def run(self, benchmark, flags={}) -> dict:
-        if benchmark not in self.benchmarks:
-            return {"return": 1, "msg": f"Invalid {benchmark}!"}
-
-        flagsstr = self.preprocess_flags(flags)
-
-        if not self.docker_mode:
-            return self.run_in_local(benchmark, flagsstr)
-        else:
-            return self.run_in_docker(benchmark, flagsstr)
-
-    @abstractmethod
-    def preprocess_flags(self, flags={}) -> str:
-        pass
-
-    @abstractmethod
-    def run_in_docker(self, benchmark, flags={}) -> dict:
-        pass
-
-    @abstractmethod
-    def run_in_local(self, benchmark, flags={}) -> dict:
-        pass
+    def _remove_existing_container(self, container_name):
+        try:
+            container = self.docker_client.containers.get(container_name)
+            container.stop()
+            container.remove()
+        except docker.errors.NotFound:
+            pass
+        except docker.errors.DockerException as e:
+            logger.error(f"Error removing container {container_name}: {e}")
 
     def __del__(self):
-        if self.docker_mode and self.container is not None:
-            self.container.kill()
-            self.client.close()
+        self.docker_client.close()
 
 
 class GCCBenchmark(CompilerBenchmarkBase):
-    def initialize(self) -> None:
-        super().initialize()
-        config_path = "cssbench.compiler.config"
-        with resources.open_text(config_path, "gcc_flags.json") as json_file:
-            gcc_flags = json.load(json_file)
-            # TODO: Handle param flags
-            self.flags = (
-                gcc_flags["O1"] + gcc_flags["O2"] + gcc_flags["O3"] + gcc_flags["Ofast"]
-            )
-            self.flags_to_disable = gcc_flags["O1"]
-            self.param_flags = gcc_flags["Param"]
+    def __init__(self, workload):
+        super().__init__(workload)
+        self.config_space = GCCConfigSpace()
 
-    def preprocess_flags(self, flags={}) -> str:
-        # get key,value pair in flags
-        flagsstr = ""
-        for key, value in flags.items():
-            if key in self.flags_to_disable:
-                flagsstr += f"-fno-{key[1:]} "
-            elif key in self.param_flags:
-                flagsstr += f"-{key}={value} "
-            else:
-                flagsstr += f"-{key} "
+    def execute_benchmark(self, flags_str):
+        self._remove_existing_container(self.container_name)
 
-        return flagsstr
-
-    def run_in_docker(self, benchmark, flagstr="") -> dict:
-        print(f'Running benchmark {benchmark} with flags "{flagstr}"')
+        # Map papi_events.txt and results directory to the container
+        papi_file = self.config_dir / "papi_events.txt"
+        volumes_mapping = {
+            papi_file: {
+                "bind": "/benchmark/utilities/papi_events.txt",
+                "mode": "rw",
+            },
+            self.results_dir: {
+                "bind": "/benchmark/results",
+                "mode": "rw",
+            },
+        }
 
         try:
-            output = self.container.exec_run(
-                f'/bin/bash /benchmark/run.sh GCC {benchmark} "{flagstr}"', stream=True
+            container = self.docker_client.containers.run(
+                self.docker_image,
+                name=self.container_name,
+                volumes=volumes_mapping,
+                command=[
+                    # "-v",
+                    "GCC",
+                    self.workload,
+                    f"--flags={flags_str}",
+                ],
+                privileged=True,
+                remove=True,
+                detach=True,
+                stdout=True,
+                stderr=True,
             )
-        except ContainerError as e:
-            return {"return": 1, "msg": f"Error running benchmark in docker: {str(e)}"}
 
-        for line in output.output:
-            print(line.decode("utf-8"), end="")
+            if self.debug_mode:
+                for line in container.logs(stream=True, follow=True):
+                    logger.info(line.strip().decode("utf-8"))
+            else:
+                container.wait()
 
-        return {}
+        except docker.errors.DockerException as e:
+            logger.error(f"Error running BenchBase container: {e}")
+            raise RuntimeError("Failed to run BenchBase.")
 
-    def run_in_local(self, benchmark, flagstr="") -> dict:
+    def run(self, flags: dict) -> dict:
+        self.config_space.set_current_config(flags)
+        
+        flags_str = self.config_space.generate_flags_str()
+
+        try:
+            self.execute_benchmark(flags_str)
+            return self.parse_results()
+        except Exception as e:
+            logger.error(f"Error running benchmark: {e}")
+
+    def run_with_random(self) -> dict:
+        self.config_space.set_random_config()
+        flags_str = self.config_space.generate_flags_str()
+
+        try:
+            self.execute_benchmark(flags_str)
+            return self.parse_results()
+        except Exception as e:
+            logger.error(f"Error running benchmark: {e}")
+            raise
+
+    def parse_results(self) -> dict:
+        try:
+            with open(self.results_dir / "gcc_results.json", "r") as f:
+                result = json.load(f)
+        except Exception as e:
+            logger.error(f"Error parsing benchmark results: {e}")
+            raise RuntimeError("Failed to parse benchmark results.")
+
+        result = result.get(self.workload, {})
+
+    # Deprecated
+    def _run_in_local(self, benchmark, flagstr="") -> dict:
         benchmark_path = resources.path(
             "cssbench.compiler.benchmark.programs", benchmark
         )
@@ -170,60 +183,101 @@ class GCCBenchmark(CompilerBenchmarkBase):
 
         print(
             f"""
-        Compilation time: {compilation_time}
-        Total execution time: {result['execution_time_0']}
-        Number of repeats: {repeat_times}
-        Average execution time: {avrg_time}
-        Max resident set size: {result['maxrss']}
-        File size (bytes): {file_size}
-        """
+            Compilation time: {compilation_time}
+            Total execution time: {result['execution_time_0']}
+            Number of repeats: {repeat_times}
+            Average execution time: {avrg_time}
+            Max resident set size: {result['maxrss']}
+            File size (bytes): {file_size}
+            """
         )
 
         return {}
 
 
 class LLVMBenchmark(CompilerBenchmarkBase):
-    def initialize(self) -> None:
-        super().initialize()
-        # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
+    def __init__(self, workload):
+        super().__init__(workload)
+        self.config_space = LLVMConfigSpace()
 
-        config_path = "cssbench.compiler.config"
-        with resources.open_text(config_path, "llvm_passes.json") as json_file:
-            llvm_passes = json.load(json_file)
-            self.flags = (
-                llvm_passes["analysis_passes"] + llvm_passes["transform_passes"]
+    def execute_benchmark(self, flags_str):
+        self._remove_existing_container(self.container_name)
+
+        # Map papi_events.txt and results directory to the container
+        papi_file = self.config_dir / "papi_events.txt"
+        volumes_mapping = {
+            papi_file: {
+                "bind": "/benchmark/utilities/papi_events.txt",
+                "mode": "rw",
+            },
+            self.results_dir: {
+                "bind": "/benchmark/results",
+                "mode": "rw",
+            },
+        }
+
+        try:
+            container = self.docker_client.containers.run(
+                self.docker_image,
+                name=self.container_name,
+                volumes=volumes_mapping,
+                command=[
+                    # "-v",
+                    "LLVM",
+                    self.workload,
+                    f"--flags={flags_str}",
+                ],
+                privileged=True,
+                remove=True,
+                detach=True,
+                stdout=True,
+                stderr=True,
             )
-            self.analysis_flags = llvm_passes["analysis_passes"]
 
-    def preprocess_flags(self, flags={}) -> str:
-        flag_list = flags.keys()
-        # Reorder the flag_list so that analysis passes comes before transform passes
-        # Use double pointer
-        left = 0
-        right = len(flag_list) - 1
-        while left < right:
-            if flag_list[left] in self.analysis_flags:
-                left += 1
+            if self.debug_mode:
+                for line in container.logs(stream=True, follow=True):
+                    logger.info(line.strip().decode("utf-8"))
             else:
-                flag_list[left], flag_list[right] = flag_list[right], flag_list[left]
-                right -= 1
+                container.wait()
 
-        flagsstr = " ".join(f"-{flag}" for flag in flag_list)
+        except docker.errors.DockerException as e:
+            logger.error(f"Error running BenchBase container: {e}")
+            raise RuntimeError("Failed to run BenchBase.")
 
-        return flagsstr
+    def run(self, flags: dict) -> dict:
+        self.config_space.set_current_config(flags)
+        flags_str = self.config_space.generate_flags_str()
 
-    def run_in_docker(self, benchmark, flagstr="") -> dict:
-        print(f'Running benchmark {benchmark} with flags "{flagstr}"')
-        output = self.container.exec_run(
-            f'/bin/bash /benchmark/run.sh LLVM {benchmark} "{flagstr}"', stream=True
-        )
+        try:
+            self.execute_benchmark(flags_str)
+            return self.parse_results()
+        except Exception as e:
+            logger.error(f"Error running benchmark: {e}")
+            raise
 
-        for line in output.output:
-            print(line.decode("utf-8"), end="")
+    def run_with_random(self) -> dict:
+        self.config_space.set_random_config()
+        flags_str = self.config_space.generate_flags_str()
 
-        return {}
+        try:
+            self.execute_benchmark(flags_str)
+            return self.parse_results()
+        except Exception as e:
+            logger.error(f"Error running benchmark: {e}")
+            raise
 
-    def run_in_local(self, benchmark, flagstr="") -> dict:
+    def parse_results(self) -> dict:
+        try:
+            with open(self.results_dir / "llvm_results.json", "r") as f:
+                result = json.load(f)
+        except Exception as e:
+            logger.error(f"Error parsing benchmark results: {e}")
+            raise RuntimeError("Failed to parse benchmark results.")
+
+        result = result.get(self.workload, {})
+
+    # Deprecated
+    def _run_in_local(self, benchmark, flagstr="") -> dict:
         # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)
         pkg_path = resources.files("cssbench")
         benchmark_path = pkg_path / "compiler/benchmark/programs" / benchmark
@@ -277,7 +331,7 @@ class LLVMBenchmark(CompilerBenchmarkBase):
             Average execution time: {avrg_time}
             Max resident set size: {result['maxrss']}
             File size (bytes): {file_size}
-        """
+            """
         )
 
         return {}
