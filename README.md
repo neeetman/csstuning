@@ -9,37 +9,56 @@ Optimizing software configurations is a crucial aspect of performance tuning for
 ## Overview
 The following block diagram shows the rough internal structure of CSStuing:
 
-![system_structure (1)](https://github.com/neeetman/csstuning/assets/71478917/35c04aeb-b942-46e8-8eb5-abd8507027ab)
+![CSSTuning System Structure](https://github.com/neeetman/csstuning/assets/71478917/35c04aeb-b942-46e8-8eb5-abd8507027ab)
 
 
 ## Benchmark List
 
-Compiler
+- **Compiler**
+- **Database Management System (DBMS)**
+- **Web Server** *(In progress)*
+- **Big Data System** *(In progress)*
 
-Data base manage system (DBMS) //to do
+### Key Features
 
-Web Server //to do
+- **Varied Benchmark Scenarios**: Emulates real-world software configuration optimization challenges across multiple systems.
+- **Multi-objective Optimization**: Features diverse performance metrics, facilitating the creation of comprehensive optimization problems.
+- **Containerized Benchmarks**: Guarantees easy reproducibility and resolves dependency issues by containerizing all benchmarks.
+- **Industrial Data-driven Tuning**: Utilizes real-world data for practical and relevant optimization.
 
-Big data system //to do
-
-## Features
-
-- Diverse Benchmark Scenarios: CSSTuning presents a rich set of benchmark scenarios that accurately emulate real-world software configuration optimization problems for multiple software systems.
-- Multi-objective Optimization: For each software system, CSSTuning incorporates various officially recognized performance evaluation metrics, allowing the construction of multi-objective optimization problems.
-- Containerized Benchmarks: All benchmarks in CSSTuning are containerized, eliminating dependency issues and ensuring easy reproducibility across different environments.
-- Industrial Data-driven Tuning: CSSTuning goes beyond traditional benchmarks by providing the ability to optimize software systems using real-world industrial data, making the optimization process more relevant and practical.
-
-## installation
+## Installation
 
 **Prerequisites:**
+- Python >= 3.8
+- Docker
+- Supported on POSIX Systems (Linux, MacOS)
 
-- POSIX System (i.e. Linux, MacOS)
-- Docker installed
-- Python 3.8+
+**Setup Steps:**
 
+1. **Install and configure Docker:**
+   ```bash
+   sudo groupadd docker
+   sudo usermod -aG docker $USER
+   newgrp docker
+   ```
+
+2. **Clone repository and install package:**
 ```
-pip install csstuning --user
+git clone https://github.com/neeetman/csstuning.git && cd csstuning
+pip install .
 ```
+
+3. **Build images:**
+```
+./cssbench/compiler/docker/build_docker.sh
+./cssbench/dbms/docker/build_docker.sh
+```
+
+4. **Optional: Load Database for DBMS benchmark:**
+```
+csstuing_dbms_load -h
+```
+
 
 ## Usage
 
