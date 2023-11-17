@@ -17,10 +17,10 @@
     <terminals>64</terminals>
     <works>
         <work>
-            <warmup>30</warmup>
-            <time>120</time>
-            <rate>10000</rate>
-            <!-- <rate>unlimited</rate> -->
+            <warmup>10</warmup>
+            <time>60</time>
+            <rate>unlimited</rate>
+            <!-- <rate>10000</rate> -->
             <weights>45,43,4,4,4</weights>
         </work>
     </works>

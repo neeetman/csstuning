@@ -1407,16 +1407,6 @@
         "scope": "Global",
         "type": "integer"
     },
-    "offline_mode": {
-        "default": "OFF",
-        "dynamic": "Yes",
-        "enum_values": [
-            "ON",
-            "OFF"
-        ],
-        "scope": "Global",
-        "type": "enum"
-    },
     "old_alter_table": {
         "default": "OFF",
         "dynamic": "Yes",
@@ -1543,16 +1533,6 @@
         "scope": "Global, Session",
         "type": "integer"
     },
-    "require_secure_transport": {
-        "default": "OFF",
-        "dynamic": "Yes",
-        "enum_values": [
-            "ON",
-            "OFF"
-        ],
-        "scope": "Global",
-        "type": "enum"
-    },
     "session_track_gtids": {
         "default": "OFF",
         "dynamic": "Yes",
@@ -1616,16 +1596,6 @@
         "type": "enum"
     },
     "skip_name_resolve": {
-        "default": "OFF",
-        "dynamic": "No",
-        "enum_values": [
-            "ON",
-            "OFF"
-        ],
-        "scope": "Global",
-        "type": "enum"
-    },
-    "skip_networking": {
         "default": "OFF",
         "dynamic": "No",
         "enum_values": [

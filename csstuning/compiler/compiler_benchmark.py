@@ -13,7 +13,7 @@ from csstuning.compiler.compiler_config_space import GCCConfigSpace, LLVMConfigS
 
 
 class CompilerBenchmarkBase:
-    AVALIABLE_WORKLOADS = [
+    AVAILABLE_WORKLOADS = [
         "cbench-automotive-bitcount",
         "cbench-security-rijndael",
         "cbench-consumer-tiff2rgba",
@@ -67,12 +67,18 @@ class CompilerBenchmarkBase:
     ]
 
     def __init__(self, workload):
+        if workload not in self.AVAILABLE_WORKLOADS:
+            logger.error(
+                f"Workload '{workload}' is not supported. Supported workloads: {self.AVAILABLE_WORKLOADS}"
+            )
+            raise ValueError(f"Workload '{workload}' is not supported.")
+
         env_conf = config_loader.get_config()
 
         self.config_dir = Path(env_conf.get("compiler", "compiler_config_dir"))
-        self.AVALIABLE_WORKLOADS = self._load_available_workloads(
-            self.config_dir / "programs.json"
-        )
+        # self.AVALIABLE_WORKLOADS = self._load_available_workloads(
+        #     self.config_dir / "programs.json"
+        # )
 
         self.docker_image = env_conf.get("compiler", "compiler_image")
         self.container_name = env_conf.get("compiler", "container_name")
@@ -167,6 +173,7 @@ class GCCBenchmark(CompilerBenchmarkBase):
             return self.parse_results()
         except Exception as e:
             logger.error(f"Error running benchmark: {e}")
+            raise
 
     def run_with_random(self) -> dict:
         self.config_space.set_random_config()
@@ -188,7 +195,11 @@ class GCCBenchmark(CompilerBenchmarkBase):
             raise RuntimeError("Failed to parse benchmark results.")
 
         result = result.get(self.workload, {})
+        return result
 
+    def get_config_space(self) -> dict:
+        return self.config_space.get_all_details()
+    
     # Deprecated
     def _run_in_local(self, benchmark, flagstr="") -> dict:
         benchmark_path = resources.path(
@@ -329,7 +340,11 @@ class LLVMBenchmark(CompilerBenchmarkBase):
             raise RuntimeError("Failed to parse benchmark results.")
 
         result = result.get(self.workload, {})
+        return result
 
+    def get_config_space(self) -> dict:
+        return self.config_space.get_all_details()
+    
     # Deprecated
     def _run_in_local(self, benchmark, flagstr="") -> dict:
         # pkg_path = Path(pkg_resources.get_distribution("csstuning").location)

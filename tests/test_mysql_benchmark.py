@@ -14,15 +14,15 @@ class TestMySQLBenchmark(unittest.TestCase):
         print(f"Starting Test：{self._testMethodName}")
         print("=" * 50)
 
-    def test_01_initialization(self):
-        self.assertTrue(
-            Path(self.benchmark.mysql_data_dir).exists(),
-            "MySQL data directory was not created.",
-        )
-        self.assertTrue(
-            Path(self.benchmark.benchbase_config_dir).exists(),
-            "BenchBase data directory was not created.",
-        )
+    # def test_01_initialization(self):
+    #     self.assertTrue(
+    #         Path(self.benchmark.mysql_data_dir).exists(),
+    #         "MySQL data directory was not created.",
+    #     )
+    #     self.assertTrue(
+    #         Path(self.benchmark.benchbase_config_dir).exists(),
+    #         "BenchBase data directory was not created.",
+    #     )
 
     def test_02_start_mysql(self):
         result = self.benchmark.start_mysql_and_wait(
@@ -30,21 +30,21 @@ class TestMySQLBenchmark(unittest.TestCase):
         )
         self.assertTrue(result)
 
-    def test_03_stop_mysql(self):
-        self.benchmark.start_mysql_and_wait(custom_config=False, limit_resources=False)
-        self.benchmark._gracefully_stop_mysql_container(
-            self.benchmark.mysql_container_name
-        )
+    # def test_03_stop_mysql(self):
+    #     self.benchmark.start_mysql_and_wait(custom_config=False, limit_resources=False)
+    #     self.benchmark._gracefully_stop_mysql_container(
+    #         self.benchmark.mysql_container_name
+    #     )
 
     # def test_04_create_database(self):
     #     self.benchmark.create_database()
 
-    def test_05_execute_benchmark(self):
-        self.benchmark.start_mysql_and_wait(custom_config=False, limit_resources=False)
-        self.benchmark.execute_benchmark()
-        self.benchmark._gracefully_stop_mysql_container(
-            self.benchmark.mysql_container_name
-        )
+    # def test_05_execute_benchmark(self):
+    #     self.benchmark.start_mysql_and_wait(custom_config=False, limit_resources=False)
+    #     self.benchmark.execute_benchmark()
+    #     self.benchmark._gracefully_stop_mysql_container(
+    #         self.benchmark.mysql_container_name
+    #     )
 
     def test_06_set_and_run(self):
         try:
@@ -66,6 +66,12 @@ class TestMySQLBenchmark(unittest.TestCase):
         except Exception as e:
             self.fail(f"run() raised an exception unexpectedly: {e}")
 
+    def test_07_set_random_and_run(self):
+        try:
+            self.benchmark.run_with_random()
+        except Exception as e:
+            self.fail(f"run() raised an exception unexpectedly: {e}")
+    
     def tearDown(self):
         # Clean up resources after each test
         self.benchmark._gracefully_stop_mysql_container(

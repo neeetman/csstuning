@@ -346,6 +346,18 @@ class MySQLBenchmark:
     # def get_metrics(self, knobs):
     #     self.run()
 
+    def run_with_random(self) -> dict:
+        self.config_space.set_random_config()
+        self.config_space.generate_config_file(self.mysql_config_file)
+
+        try:
+            self.start_mysql_and_wait()
+            self.execute_benchmark()
+            return self.parse_results()
+        except Exception as e:
+            logger.error(f"Error running MySQL benchmark: {e}")
+            raise
+
     def run(self, knobs: dict) -> dict:
         self.config_space.set_current_config(knobs)
         self.config_space.generate_config_file(self.mysql_config_file)
@@ -357,7 +369,7 @@ class MySQLBenchmark:
         except Exception as e:
             logger.error(f"Error running MySQL benchmark: {e}")
             raise
-
+    
     def parse_results(self) -> dict:
         summary_file = None
         for item in self.benchbase_results_dir.iterdir():

@@ -53,10 +53,15 @@ class CustomInstall(install):
         benchbase_config_dir.mkdir(parents=True, exist_ok=True)
         benchbase_results_dir.mkdir(parents=True, exist_ok=True)
 
-        if not any(benchbase_config_dir.iterdir()):
-            benchbase_source_path = setup_dir / "cssbench/dbms/config/benchbase"
-            copy_all(benchbase_source_path, benchbase_config_dir)
+        # Copy without overwriting the existing config files 
+        # if not any(benchbase_config_dir.iterdir()):
+        #     benchbase_source_path = setup_dir / "cssbench/dbms/config/benchbase"
+        #     copy_all(benchbase_source_path, benchbase_config_dir)
 
+        # Copy and overwrite the existing config files
+        benchbase_source_path = setup_dir / "cssbench/dbms/config/benchbase"
+        copy_all(benchbase_source_path, benchbase_config_dir)
+        
         dbms_config_source = setup_dir / "cssbench/dbms/config/mysql"
         copy_all(dbms_config_source, dbms_config_dir)
 
