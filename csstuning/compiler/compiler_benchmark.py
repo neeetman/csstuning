@@ -13,6 +13,59 @@ from csstuning.compiler.compiler_config_space import GCCConfigSpace, LLVMConfigS
 
 
 class CompilerBenchmarkBase:
+    AVALIABLE_WORKLOADS = [
+        "cbench-automotive-bitcount",
+        "cbench-security-rijndael",
+        "cbench-consumer-tiff2rgba",
+        "cbench-telecom-adpcm-d",
+        "cbench-consumer-tiff2bw",
+        "cbench-automotive-susan-e",
+        "cbench-security-sha",
+        "cbench-network-patricia",
+        "cbench-automotive-qsort1",
+        "cbench-bzip2",
+        "cbench-telecom-adpcm-c",
+        "cbench-automotive-susan-s",
+        "cbench-consumer-jpeg-d",
+        "cbench-network-dijkstra",
+        "cbench-consumer-mad",
+        "cbench-automotive-susan-c",
+        "cbench-telecom-crc32",
+        "cbench-office-stringsearch2",
+        "cbench-consumer-jpeg-c",
+        "cbench-security-pgp",
+        "cbench-consumer-tiff2dither",
+        "cbench-telecom-gsm",
+        "polybench-symm",
+        "polybench-2mm",
+        "polybench-3mm",
+        "polybench-doitgen",
+        "polybench-jacobi-2d-imper",
+        "polybench-gramschmidt",
+        "polybench-gesummv",
+        "polybench-cholesky",
+        "polybench-gemver",
+        "polybench-trmm",
+        "polybench-mvt",
+        "polybench-trisolv",
+        "polybench-dynprog",
+        "polybench-gemm",
+        "polybench-jacobi-1d-imper",
+        "polybench-durbin",
+        "polybench-seidel-2d",
+        "polybench-adi",
+        "polybench-bicg",
+        "polybench-atax",
+        "polybench-medley-floyd-warshall",
+        "polybench-fdtd-apml",
+        "polybench-syr2k",
+        "polybench-lu",
+        "polybench-medley-reg-detect",
+        "polybench-ludcmp",
+        "polybench-fdtd-2d",
+        "polybench-syrk",
+    ]
+
     def __init__(self, workload):
         env_conf = config_loader.get_config()
 
@@ -106,7 +159,7 @@ class GCCBenchmark(CompilerBenchmarkBase):
 
     def run(self, flags: dict) -> dict:
         self.config_space.set_current_config(flags)
-        
+
         flags_str = self.config_space.generate_flags_str()
 
         try:
