@@ -1,7 +1,11 @@
 ### TODO
 - [x] Logger module
-- [ ] Replace importlib_resources with importlib.resources
-- [ ] Store all config files in user's home directory
+- [x] Replace importlib_resources with importlib.resources
+- [x] Store all config files in user's home directory
+- [x] Compiler benchmark restruction
+- [ ] Change CBench to MiBench, add input data
 - [ ] Resources monitor
-- [ ] Compiler benchmark restruction
 - [ ] Webservice benchmark
+- [ ] Add Sysbench and JOB benchmark to DBMS benchmark
+- [ ] Add PostgreSQL to DBMS benchmark
+- [ ] Add 

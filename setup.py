@@ -40,7 +40,9 @@ class CustomInstall(install):
         compiler_config_source = setup_dir / "cssbench/compiler/config"
         copy_all(compiler_config_source, compiler_config_dir)
 
-        print(f"Initialized compiler benchmark data directory at {csstuning_dir}/compiler")
+        print(
+            f"Initialized compiler benchmark data directory at {csstuning_dir}/compiler"
+        )
 
     def initialize_dbms_data_dir(self, csstuning_dir):
         setup_dir = Path(__file__).parent
@@ -53,7 +55,7 @@ class CustomInstall(install):
         benchbase_config_dir.mkdir(parents=True, exist_ok=True)
         benchbase_results_dir.mkdir(parents=True, exist_ok=True)
 
-        # Copy without overwriting the existing config files 
+        # Copy without overwriting the existing config files
         # if not any(benchbase_config_dir.iterdir()):
         #     benchbase_source_path = setup_dir / "cssbench/dbms/config/benchbase"
         #     copy_all(benchbase_source_path, benchbase_config_dir)
@@ -61,7 +63,7 @@ class CustomInstall(install):
         # Copy and overwrite the existing config files
         benchbase_source_path = setup_dir / "cssbench/dbms/config/benchbase"
         copy_all(benchbase_source_path, benchbase_config_dir)
-        
+
         dbms_config_source = setup_dir / "cssbench/dbms/config/mysql"
         copy_all(dbms_config_source, dbms_config_dir)
 
@@ -119,12 +121,12 @@ setup(
     entry_points={
         "console_scripts": [
             "csstuning=csstuning.kernel:cli",
-            "csstuning_dbms_init=csstuning.kernel:load_dbms_database"
+            "csstuning_dbms_init=csstuning.kernel:load_dbms_database",
         ]
     },
-    install_requires=["docker", "pymysql"],
+    install_requires=["docker", "pymysql", "cffi"],
     zip_safe=False,
     cmdclass={
-        'install': CustomInstall,
+        "install": CustomInstall,
     },
 )
