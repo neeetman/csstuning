@@ -272,6 +272,7 @@ class MySQLBenchmark:
                 return True
             if time.time() - start_time >= timeout:
                 logger.error(f"MySQL is not ready after {timeout} seconds.")
+                raise RuntimeError("MySQL container failed to start.")
                 # It may be better to keep the container existing for debugging
                 # self.mysql_container.stop()
                 # self.mysql_container.remove()
