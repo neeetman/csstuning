@@ -118,10 +118,8 @@ def main():
         for thread in threads:
             thread.join()
         print("\nMonitoring interrupted by user.")
-    finally:
         connection.close()
         bench.gracefully_stop_container()
-
 
 if __name__ == "__main__":
     main()
