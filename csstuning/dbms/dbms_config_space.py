@@ -42,15 +42,25 @@ class MySQLConfigSpace(ConfigSpace):
                 "2. 'innodb_thread_concurrency' * 200 * 1024 should be <= 'innodb_log_file_size' * 'innodb_log_files_in_group'.\n\n"
                 "Please adjust your configuration to meet these constraints."
             )
+        
+    def set_random_config(self):
+        valid_config = False
+        while not valid_config:
+            # Set random values for each configuration item
+            for item in self.config_items.values():
+                item.set_random_value()
+
+            # Check if the random configuration is valid
+            valid_config = self._validate_constraint()
 
     def _validate_constraint(self):
-        # innodb_log_file_size * innodb_log_files_in_group <= 512GB
-        # innodb_thread_concurrency * 200 * 1024 <= innodb_log_file_size * innodb_log_files_in_group
+        # Constraint 1: innodb_log_file_size * innodb_log_files_in_group <= 512GB
+        # Constraint 2: innodb_thread_concurrency * 200 * 1024 <= innodb_log_file_size * innodb_log_files_in_group
         log_file_size = self.config_items["innodb_log_file_size"].current_value
         log_files_in_group = self.config_items["innodb_log_files_in_group"].current_value
         thread_concurrency = self.config_items["innodb_thread_concurrency"].current_value
 
-        MAX_LOG_SIZE_BYTES = 512 * 1024 * 1024 * 1024  # 512GB in bytes
+        MAX_LOG_SIZE_BYTES = 512 * 1024**3  # 512GB in bytes
 
         return (
             log_file_size * log_files_in_group <= MAX_LOG_SIZE_BYTES

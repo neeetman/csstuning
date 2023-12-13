@@ -2,6 +2,7 @@
 set -euo pipefail
 
 image_name="csstuning-dbms:0.1"
+mysql_image="mysql:5.7"
 
 echo "Building docker image $image_name"
 
@@ -45,6 +46,6 @@ docker build -t $image_name \
     -f "$build_dir/Dockerfile" "$build_dir"
 
 # Pull mysql image
-docker pull mysql:5.7
+docker pull $mysql_image
 
 echo "Done"
