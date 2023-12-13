@@ -20,7 +20,7 @@ class MySQLBenchmark:
         "smallbank",
         "sibench",
         "voter",
-        "seats",
+        # "seats",
         "tatp",
     ]
 

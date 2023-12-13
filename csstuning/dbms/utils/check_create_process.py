@@ -1,6 +1,8 @@
+import sys
 import pymysql
 import time
 import argparse
+from tqdm import tqdm
 
 benchmarks = {
     "tpcc": [
@@ -20,7 +22,7 @@ benchmarks = {
     "voter": [
         "contestants",
         "votes",
-        "v_votes_by_constestant_number_state",
+        "v_votes_by_contestant_number_state",
         "v_votes_by_phone_number",
         "area_code_state",
     ],
@@ -28,32 +30,33 @@ benchmarks = {
 }
 
 estimated_sizes = {
-    "tpcc": 17.8,
-    "twitter": 7.9,
-    "smallbank": 2.4,
-    "sibench": 0.5,
-    "voter": 0.06,
-    "tatp": 6.3,
+    "sibench": 0.02,
+    "voter": 0.09,
+    "smallbank": 2362.86,
+    "twitter": 6325.08,
+    "tatp": 6731.00,
+    "tpcc": 17.8 * 1024,
 }
 
-
-def get_benchmark_size(cursor, benchmark, tables):
+def get_benchmark_size(cursor, tables):
     total_size = 0
     for table in tables:
         query = f"""
-            SELECT 
-                ROUND(SUM(data_length + index_length) / 1024 / 1024 / 1024, 2) AS 'size_in_gb' 
+            SELECT
+                ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'size_in_mb' 
             FROM 
                 tables 
             WHERE 
-                table_schema = '{benchmark}' AND
+                table_schema = 'benchbase' AND
                 table_name = '{table}';
         """
         cursor.execute(query)
         result = cursor.fetchone()
-        total_size += result["size_in_gb"] if result else 0
-    return total_size
-
+        if result and result["size_in_mb"] is not None:
+            total_size += result["size_in_mb"]
+        else:
+            total_size += 0
+    return float(total_size)
 
 def main(benchmark):
     connection = pymysql.connect(
@@ -67,17 +70,16 @@ def main(benchmark):
     )
     try:
         with connection.cursor() as cursor:
-            while True:
-                if benchmark in benchmarks:
-                    tables = benchmarks[benchmark]
-                    current_size = get_benchmark_size(cursor, benchmark, tables)
-                    estimated_size = estimated_sizes[benchmark.upper()]
-                    print(
-                        f"Benchmark: {benchmark}, Current Size: {current_size} GB, Estimated Size: {estimated_size} GB"
-                    )
-                else:
-                    print(f"Benchmark '{benchmark}' not found.")
-                time.sleep(10)
+            if benchmark in benchmarks:
+                tables = benchmarks[benchmark]
+                estimated_size = estimated_sizes[benchmark]
+                with tqdm(total=estimated_size, unit='MB', desc=f"Benchmark: {benchmark}") as pbar:
+                    while True:
+                        current_size = get_benchmark_size(cursor, tables)
+                        pbar.update(current_size - pbar.n)
+                        time.sleep(5)
+            else:
+                print(f"Benchmark '{benchmark}' not found.")
     finally:
         connection.close()
 
