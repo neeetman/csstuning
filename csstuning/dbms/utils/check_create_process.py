@@ -72,8 +72,10 @@ def main():
     else:
         bench = MySQLBenchmark("tpcc")
     
+    need_stop = False
     if bench._is_mysql_ready() == False:
         bench.start_mysql_and_wait()
+        need_stop = True
 
     connection = pymysql.connect(
         host="127.0.0.1",
@@ -128,7 +130,8 @@ def main():
                 print(f"Benchmark '{benchmark}' not found.")
     finally:
         connection.close()
-        bench.gracefully_stop_container()
+        if need_stop:
+            bench.gracefully_stop_container()
 
 
 if __name__ == "__main__":
