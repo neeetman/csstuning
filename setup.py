@@ -125,7 +125,7 @@ setup(
             "csstuning_dbms_check=csstuning.dbms.utils.check_create_process:main"
         ]
     },
-    install_requires=["docker", "pymysql", "cffi"],
+    install_requires=["docker", "pymysql", "cffi", "tqdm"],
     zip_safe=False,
     cmdclass={
         "install": CustomInstall,

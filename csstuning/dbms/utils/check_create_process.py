@@ -113,7 +113,7 @@ def main():
             elif benchmark in benchmarks:
                 estimated_size = estimated_sizes[benchmark]
                 with tqdm(
-                    total=estimated_size, unit="MB", desc=f"Benchmark: {benchmark}"
+                    total=estimated_size, unit="MB", desc=f"{benchmark}"
                 ) as pbar:
                     try:
                         while True:
