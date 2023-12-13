@@ -66,12 +66,11 @@ def monitor_benchmark(cursor, benchmark, stop_event):
     """Monitor a single benchmark."""
     tables = benchmarks[benchmark]
     estimated_size = estimated_sizes[benchmark]
-    with tqdm(total=estimated_size, unit='MB', desc=f"Benchmark: {benchmark}") as pbar:
+    with tqdm(total=estimated_size, unit="MB", desc=f"Benchmark: {benchmark}") as pbar:
         while not stop_event.is_set():
             current_size = get_benchmark_size(cursor, tables)
             pbar.update(current_size - pbar.n)
             time.sleep(5)
-
 
 
 def main():
@@ -80,7 +79,10 @@ def main():
     args = parser.parse_args()
     benchmark = args.benchmark.lower()
 
-    bench = MySQLBenchmark(benchmark)
+    if benchmark != "all":
+        bench = MySQLBenchmark(benchmark)
+    else:
+        bench = MySQLBenchmark("tpcc")
     bench.start_mysql_and_wait()
 
     connection = pymysql.connect(
@@ -100,7 +102,9 @@ def main():
         with connection.cursor() as cursor:
             if benchmark == "all":
                 for bench_name in benchmarks.keys():
-                    thread = threading.Thread(target=monitor_benchmark, args=(cursor, bench_name, stop_event))
+                    thread = threading.Thread(
+                        target=monitor_benchmark, args=(cursor, bench_name, stop_event)
+                    )
                     threads.append(thread)
                     thread.start()
                 for thread in threads:
