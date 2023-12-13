@@ -73,7 +73,7 @@ def main():
         bench = MySQLBenchmark("tpcc")
     
     if bench._is_mysql_ready() == False:
-        bench.start_mysql()
+        bench.start_mysql_and_wait()
 
     connection = pymysql.connect(
         host="127.0.0.1",
