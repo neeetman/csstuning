@@ -7,8 +7,8 @@ RUN apt-get update \
 
 # Get user and group IDs from build args:
 # docker build --build-arg CONTAINERUSER_UID=$(id -u) --build-arg CONTAINERUSER_GID=$(id -g)
-# ARG CONTAINERUSER_UID=1000
-# ARG CONTAINERUSER_GID=1000
+ARG CONTAINERUSER_UID
+ARG CONTAINERUSER_GID
 RUN groupadd --non-unique --gid ${CONTAINERUSER_GID} containergroup \
     && useradd --non-unique --create-home --no-user-group --comment 'Container User' \
     --uid ${CONTAINERUSER_UID} --gid ${CONTAINERUSER_GID} containeruser \
