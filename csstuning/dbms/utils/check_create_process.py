@@ -91,7 +91,7 @@ def main():
                 print(f"Benchmark '{benchmark}' not found.")
     finally:
         connection.close()
-        bench._gracefully_stop_mysql_container()
+        bench.gracefully_stop_container()
 
 
 if __name__ == "__main__":
