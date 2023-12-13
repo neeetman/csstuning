@@ -1,5 +1,8 @@
-# import sys
-# sys.path.append("/home/anshao/csstuning")
+import os
+import sys
+current_dir = os.path.dirname(os.path.abspath(__file__))
+package_dir = os.path.dirname(current_dir)
+sys.path.insert(0, package_dir)
 
 import unittest
 from pathlib import Path
