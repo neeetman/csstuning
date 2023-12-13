@@ -1,7 +1,6 @@
 import time
 import pymysql
 import argparse
-import threading
 from tqdm import tqdm
 
 from csstuning.dbms.dbms_benchmark import MySQLBenchmark
@@ -62,17 +61,6 @@ def get_benchmark_size(cursor, tables):
     return float(total_size)
 
 
-def monitor_benchmark(cursor, benchmark, stop_event):
-    """Monitor a single benchmark."""
-    tables = benchmarks[benchmark]
-    estimated_size = estimated_sizes[benchmark]
-    with tqdm(total=estimated_size, unit="MB", desc=f"Benchmark: {benchmark}") as pbar:
-        while not stop_event.is_set():
-            current_size = get_benchmark_size(cursor, tables)
-            pbar.update(current_size - pbar.n)
-            time.sleep(5)
-
-
 def main():
     parser = argparse.ArgumentParser(description="Monitor benchmark loading progress.")
     parser.add_argument("benchmark", help="Name of the benchmark to monitor")
@@ -83,7 +71,6 @@ def main():
         bench = MySQLBenchmark(benchmark)
     else:
         bench = MySQLBenchmark("tpcc")
-    bench.start_mysql_and_wait()
 
     connection = pymysql.connect(
         host="127.0.0.1",
@@ -95,31 +82,51 @@ def main():
         cursorclass=pymysql.cursors.DictCursor,
     )
 
-    threads = []
-    stop_event = threading.Event()
-
     try:
         with connection.cursor() as cursor:
             if benchmark == "all":
+                pbar_dict = {}
                 for bench_name in benchmarks.keys():
-                    thread = threading.Thread(
-                        target=monitor_benchmark, args=(cursor, bench_name, stop_event)
+                    estimated_size = estimated_sizes[bench_name]
+                    pbar_dict[bench_name] = tqdm(
+                        total=estimated_size, unit="MB", desc=f"Benchmark: {bench_name}"
                     )
-                    threads.append(thread)
-                    thread.start()
-                for thread in threads:
-                    thread.join()
+
+                try:
+                    while True:
+                        for bench_name, pbar in pbar_dict.items():
+                            current_size = get_benchmark_size(
+                                cursor, benchmarks[bench_name]
+                            )
+                            pbar.update(current_size - pbar.n)
+                        time.sleep(5)
+                except KeyboardInterrupt:
+                    print("\nMonitoring interrupted by user.")
+                    for pbar in pbar_dict.values():
+                        pbar.close()
+
             elif benchmark in benchmarks:
-                monitor_benchmark(cursor, benchmark, stop_event)
+                estimated_size = estimated_sizes[benchmark]
+                with tqdm(
+                    total=estimated_size, unit="MB", desc=f"Benchmark: {benchmark}"
+                ) as pbar:
+                    try:
+                        while True:
+                            current_size = get_benchmark_size(
+                                cursor, benchmarks[benchmark]
+                            )
+                            pbar.update(current_size - pbar.n)
+                            time.sleep(5)
+                    except KeyboardInterrupt:
+                        print(
+                            f"\nMonitoring of benchmark '{benchmark}' was interrupted by user."
+                        )
             else:
                 print(f"Benchmark '{benchmark}' not found.")
-    except KeyboardInterrupt:
-        stop_event.set()
-        for thread in threads:
-            thread.join()
-        print("\nMonitoring interrupted by user.")
+    finally:
         connection.close()
         bench.gracefully_stop_container()
+
 
 if __name__ == "__main__":
     main()
