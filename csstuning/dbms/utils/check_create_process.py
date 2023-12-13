@@ -71,6 +71,7 @@ def main():
         bench = MySQLBenchmark(benchmark)
     else:
         bench = MySQLBenchmark("tpcc")
+    bench.start_mysql()
 
     connection = pymysql.connect(
         host="127.0.0.1",
