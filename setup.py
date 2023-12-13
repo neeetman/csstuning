@@ -122,7 +122,7 @@ setup(
         "console_scripts": [
             "csstuning=csstuning.kernel:cli",
             "csstuning_dbms_init=csstuning.kernel:load_dbms_database",
-            "csstuning_dbms_check=csstuning.dbms.utils:main"
+            "csstuning_dbms_check=csstuning.dbms.utils.check_create_process:main"
         ]
     },
     install_requires=["docker", "pymysql", "cffi"],
