@@ -56,6 +56,7 @@ class MySQLBenchmark:
         self.workload = workload
         self.config_space = MySQLConfigSpace()
         self.docker_client = docker.from_env()
+        self.mysql_container = None
 
         # self.initialize_benchmark_data_dir()
 
@@ -284,7 +285,7 @@ class MySQLBenchmark:
 
     def _is_mysql_ready(self):
         try:
-            if self.mysql_container.status == "exited":
+            if self.mysql_container and self.mysql_container.status == "exited":
                 raise RuntimeError("MySQL container failed to start.")
 
             with pymysql.connect(
