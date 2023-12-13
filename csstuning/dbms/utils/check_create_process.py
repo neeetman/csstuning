@@ -92,7 +92,7 @@ def main():
                 for bench_name in benchmarks.keys():
                     estimated_size = estimated_sizes[bench_name]
                     pbar_dict[bench_name] = tqdm(
-                        total=estimated_size, unit="MB", desc=f"Benchmark: {bench_name}"
+                        total=estimated_size, unit="MB", desc=f"{bench_name}"
                     )
 
                 try:
