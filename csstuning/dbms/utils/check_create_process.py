@@ -1,8 +1,9 @@
-import sys
 import pymysql
 import time
 import argparse
 from tqdm import tqdm
+
+from csstuning.dbms.dbms_benchmark import MySQLBenchmark
 
 benchmarks = {
     "tpcc": [
@@ -58,7 +59,15 @@ def get_benchmark_size(cursor, tables):
             total_size += 0
     return float(total_size)
 
-def main(benchmark):
+def main():
+    parser = argparse.ArgumentParser(description="Monitor benchmark loading progress.")
+    parser.add_argument("benchmark", help="Name of the benchmark to monitor")
+    args = parser.parse_args()
+    benchmark = args.benchmark.lower()
+
+    bench = MySQLBenchmark(benchmark)
+    bench.start_mysql_and_wait()
+
     connection = pymysql.connect(
         host="127.0.0.1",
         port=3307,
@@ -82,10 +91,8 @@ def main(benchmark):
                 print(f"Benchmark '{benchmark}' not found.")
     finally:
         connection.close()
+        bench._gracefully_stop_mysql_container()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Monitor benchmark loading progress.")
-    parser.add_argument("benchmark", help="Name of the benchmark to monitor")
-    args = parser.parse_args()
-    main(args.benchmark.lower())
+    main()
