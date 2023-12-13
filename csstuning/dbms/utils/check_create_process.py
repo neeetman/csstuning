@@ -36,7 +36,7 @@ estimated_sizes = {
     "smallbank": 2362.86,
     "twitter": 6325.08,
     "tatp": 6731.00,
-    "tpcc": 17.8 * 1024,
+    "tpcc": 20156.17,
 }
 
 def get_benchmark_size(cursor, tables):

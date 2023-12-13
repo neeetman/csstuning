@@ -149,6 +149,9 @@ class MySQLBenchmark:
                 f"Error gracefully stopping MySQL container {container_name}: {e}"
             )
             self._remove_existing_container(container_name)
+    
+    def gracefully_stop_container(self):
+        self._gracefully_stop_mysql_container(self.mysql_container_name)
 
     def start_mysql(self, custom_config=True, limit_resources=True):
         self._gracefully_stop_mysql_container(self.mysql_container_name)
