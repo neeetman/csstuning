@@ -161,7 +161,7 @@ class MySQLBenchmark:
             self.mysql_data_dir: {"bind": "/var/lib/mysql", "mode": "rw"},
         }
         if custom_config and self.mysql_config_file.is_file():
-            volumes[str(self.mysql_config_file)] = {
+            volumes[self.mysql_config_file] = {
                 "bind": "/etc/mysql/conf.d/custom.cnf",
                 "mode": "rw",
             }

@@ -74,7 +74,7 @@ def main():
     
     need_stop = False
     if bench._is_mysql_ready() == False:
-        bench.start_mysql_and_wait()
+        bench.start_mysql_and_wait(custom_config=False, limit_resources=False)
         need_stop = True
 
     connection = pymysql.connect(
