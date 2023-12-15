@@ -15,13 +15,13 @@ from csstuning.dbms.dbms_config_space import MySQLConfigSpace
 
 class MySQLBenchmark:
     AVAILABLE_WORKLOADS = [
-        "tpcc",
-        "twitter",
-        "smallbank",
         "sibench",
         "voter",
-        # "seats",
+        "smallbank",
+        "twitter",
         "tatp",
+        # "seats",
+        "tpcc",
     ]
 
     def __init__(self, workload):
