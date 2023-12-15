@@ -102,13 +102,26 @@ class CompilerBenchmarkBase:
     def _remove_existing_container(self, container_name):
         try:
             container = self.docker_client.containers.get(container_name)
-            container.stop()
-            container.remove()
+            if container.status == 'running':
+                container.stop()
+            container.remove(force=True)
         except docker.errors.NotFound:
             pass
         except docker.errors.DockerException as e:
             logger.error(f"Error removing container {container_name}: {e}")
+            raise e
 
+        timeout = 30
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            try:
+                self.docker_client.containers.get(container_name)
+                time.sleep(1)
+            except docker.errors.NotFound:
+                return
+        logger.error(f"Timeout: Container {container_name} could not be removed in time.")
+        raise RuntimeError(f"Timeout: Failed to remove container {container_name}.")
+    
     def __del__(self):
         if hasattr(self, "docker_client"):
             self.docker_client.close()
