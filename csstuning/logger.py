@@ -1,7 +1,9 @@
 import logging
 import os
 from logging.handlers import RotatingFileHandler
+
 from csstuning.config import config_loader
+
 
 def setup_logger(name, log_dir=None, log_file_name="log.txt", level=logging.INFO, max_bytes=1048576, backup_count=3):
     """Setup a logger with file and stream handlers."""

@@ -1,7 +1,8 @@
 import json
 from pathlib import Path
-from csstuning.config_space import ConfigSpace
+
 from csstuning.config import config_loader
+from csstuning.config_space import ConfigSpace
 
 
 class GCCConfigSpace(ConfigSpace):
@@ -94,6 +95,15 @@ class GCCConfigSpace(ConfigSpace):
             for m1 in m_values
             if m1 < n1
         ]
+    
+    @staticmethod
+    def map_integer_to_quaternion(index):
+        quaternions_list = GCCConfigSpace._create_quaternions_mapping()
+        
+        if 0 <= index < len(quaternions_list):
+            return quaternions_list[index]
+        else:
+            return None
 
 
 class LLVMConfigSpace(ConfigSpace):

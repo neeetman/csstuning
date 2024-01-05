@@ -1,7 +1,8 @@
 import json
 from pathlib import Path
-from csstuning.config_space import ConfigSpace
+
 from csstuning.config import config_loader
+from csstuning.config_space import ConfigSpace
 
 
 class MySQLConfigSpace(ConfigSpace):

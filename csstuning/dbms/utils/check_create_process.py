@@ -1,6 +1,7 @@
-import time
-import pymysql
 import argparse
+import time
+
+import pymysql
 from tqdm import tqdm
 
 from csstuning.dbms.dbms_benchmark import MySQLBenchmark

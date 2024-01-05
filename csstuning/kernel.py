@@ -1,11 +1,12 @@
 import argparse
 import json
-import sys
 import subprocess
+import sys
 from importlib import resources
 from pathlib import Path
-from csstuning.dbms.dbms_benchmark import MySQLBenchmark
+
 from csstuning.compiler.compiler_benchmark import GCCBenchmark, LLVMBenchmark
+from csstuning.dbms.dbms_benchmark import MySQLBenchmark
 
 compiler_benchs = []
 

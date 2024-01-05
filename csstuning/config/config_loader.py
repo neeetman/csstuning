@@ -1,7 +1,7 @@
 import configparser
 import os
-from pathlib import Path
 from importlib import resources
+from pathlib import Path
 
 
 class ConfigLoader:

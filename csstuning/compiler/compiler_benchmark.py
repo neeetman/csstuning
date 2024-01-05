@@ -1,15 +1,17 @@
-import docker
 import json
 import os
 import subprocess
 import time
 from importlib import resources
-from docker.errors import ContainerError
 from pathlib import Path
 
-from csstuning.logger import logger
+import docker
+from docker.errors import ContainerError
+
+from csstuning.compiler.compiler_config_space import (GCCConfigSpace,
+                                                      LLVMConfigSpace)
 from csstuning.config import config_loader
-from csstuning.compiler.compiler_config_space import GCCConfigSpace, LLVMConfigSpace
+from csstuning.logger import logger
 
 
 class CompilerBenchmarkBase:
@@ -156,23 +158,34 @@ class GCCBenchmark(CompilerBenchmarkBase):
             },
         }
 
+
         try:
-            container = self.docker_client.containers.run(
-                self.docker_image,
-                name=self.container_name,
-                volumes=volumes_mapping,
-                command=[
-                    # "-v",
-                    "GCC",
-                    self.workload,
-                    f"--flags={flags_str}",
-                ],
-                privileged=True,
-                remove=True,
-                detach=True,
-                stdout=True,
-                stderr=True,
-            )
+            attempt = 0
+            while attempt < 3:
+                try:
+                    container = self.docker_client.containers.run(
+                        self.docker_image,
+                        name=self.container_name,
+                        volumes=volumes_mapping,
+                        command=[
+                            "GCC",
+                            self.workload,
+                            f"--flags={flags_str}",
+                        ],
+                        privileged=True,
+                        remove=True,
+                        detach=True,
+                        stdout=True,
+                        stderr=True,
+                    )
+            
+                    # If the container runs successfully, break out of the retry loop
+                    break
+
+                except TimeoutError as te:
+                    logger.warning(f"Attempt {attempt + 1} timed out: {te}")
+                    time.sleep(1.5 ** attempt)  # Exponential backoff
+                    attempt += 1
 
             if self.debug_mode:
                 for line in container.logs(stream=True, follow=True):
@@ -180,6 +193,8 @@ class GCCBenchmark(CompilerBenchmarkBase):
             else:
                 container.wait()
 
+        except docker.errors.NotFound as e:
+            logger.error("The container might already be removed.")
         except docker.errors.DockerException as e:
             logger.error(f"Error running BenchBase container: {e}")
             raise RuntimeError("Failed to run BenchBase.")
@@ -303,28 +318,40 @@ class LLVMBenchmark(CompilerBenchmarkBase):
         }
 
         try:
-            container = self.docker_client.containers.run(
-                self.docker_image,
-                name=self.container_name,
-                volumes=volumes_mapping,
-                command=[
-                    # "-v",
-                    "LLVM",
-                    self.workload,
-                    f"--flags={flags_str}",
-                ],
-                privileged=True,
-                remove=True,
-                detach=True,
-                stdout=True,
-                stderr=True,
-            )
+            attempt = 0
+            while attempt < 3:
+                try:
+                    container = self.docker_client.containers.run(
+                        self.docker_image,
+                        name=self.container_name,
+                        volumes=volumes_mapping,
+                        command=[
+                            # "-v",
+                            "LLVM",
+                            self.workload,
+                            f"--flags={flags_str}",
+                        ],
+                        privileged=True,
+                        remove=True,
+                        detach=True,
+                        stdout=True,
+                        stderr=True,
+                    )
+                    # If the container runs successfully, break out of the retry loop
+                    break
+                except TimeoutError as te:
+                    logger.warning(f"Attempt {attempt + 1} timed out: {te}")
+                    time.sleep(1.5 ** attempt)
+                    attempt += 1
 
             if self.debug_mode:
                 for line in container.logs(stream=True, follow=True):
                     logger.info(line.strip().decode("utf-8"))
             else:
                 container.wait()
+
+        except docker.errors.NotFound as e:
+            logger.error(f"The container might already be removed.")
 
         except docker.errors.DockerException as e:
             logger.error(f"Error running BenchBase container: {e}")

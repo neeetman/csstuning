@@ -1,16 +1,17 @@
+import json
+import os
+import shutil
+import time
+from importlib import resources
+from pathlib import Path
+
 import docker
 import docker.errors
-import os
-import time
 import pymysql
-import shutil
-import json
-from pathlib import Path
-from importlib import resources
 
-from csstuning.logger import logger
 from csstuning.config import config_loader
 from csstuning.dbms.dbms_config_space import MySQLConfigSpace
+from csstuning.logger import logger
 
 
 class MySQLBenchmark:
