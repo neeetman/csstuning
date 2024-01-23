@@ -342,7 +342,7 @@ class MySQLBenchmark:
                     "--execute=true",
                     "--sample 1",
                     "--interval-monitor 1000",
-                    "--json-histograms /benchbase/results/histograms.json",
+                    # "--json-histograms /benchbase/results/histograms.json",
                 ],
                 stdout=True,
                 stderr=True,

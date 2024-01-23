@@ -1225,7 +1225,7 @@
         "default": 4194304,
         "dynamic": "Yes",
         "max": 1073741824,
-        "min": 1024,
+        "min": 2048,
         "scope": "Global, Session",
         "type": "integer"
     },
