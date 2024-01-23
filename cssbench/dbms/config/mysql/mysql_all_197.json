@@ -1225,7 +1225,7 @@
         "default": 4194304,
         "dynamic": "Yes",
         "max": 1073741824,
-        "min": 2048,
+        "min": 1024,
         "scope": "Global, Session",
         "type": "integer"
     },
@@ -1338,14 +1338,6 @@
         "dynamic": "Yes",
         "max": 8388608,
         "min": 4,
-        "scope": "Global, Session",
-        "type": "integer"
-    },
-    "max_user_connections": {
-        "default": 0,
-        "dynamic": "Yes",
-        "max": 4294967295,
-        "min": 0,
         "scope": "Global, Session",
         "type": "integer"
     },
