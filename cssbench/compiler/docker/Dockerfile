@@ -1,4 +1,4 @@
-FROM ubuntu:focal as builder
+FROM ubuntu:focal AS builder
 
 ARG DEBIAN_FRONTEND=noninteractive
 
